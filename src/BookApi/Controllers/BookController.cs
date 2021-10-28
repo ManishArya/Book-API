@@ -29,6 +29,7 @@ namespace BookApi.Controllers
         }
 
         [HttpGet("list")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetBooks()
         {
             try

@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 namespace BookApi
 {
@@ -27,6 +28,10 @@ namespace BookApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            var logger = new LoggerConfiguration().
+                 ReadFrom.Configuration(configuration)
+                 .CreateLogger();
         }
 
         public IConfiguration Configuration { get; }
