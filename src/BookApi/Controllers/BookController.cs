@@ -29,16 +29,15 @@ namespace BookApi.Controllers
         }
 
         [HttpGet("list")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetBooks()
         {
             try
             {
-                _logger.LogInformation($"{nameof(BookController.GetBooks)} calling");
+                _logger.LogInformation($"{nameof(BookController)}.{nameof(GetBooks)} beginning {Request.Path}");
 
                 var movies = await _bookService.GetBooks();
 
-                _logger.LogInformation($"{nameof(BookController.GetBooks)} returning");
+                _logger.LogInformation($"{nameof(BookController)}.{nameof(GetBooks)} returning");
 
                 return Ok(movies);
             }
@@ -60,11 +59,11 @@ namespace BookApi.Controllers
                     return BadRequest();
                 }
 
-                _logger.LogInformation($"{nameof(BookController.GetBook)} calling");
+                _logger.LogInformation($"{nameof(BookController)}.{nameof(GetBook)} beginning {Request.Path}{Request.QueryString}");
 
                 var result = await _bookService.GetBookById(id);
 
-                _logger.LogInformation($"{nameof(BookController.GetBook)} returning");
+                _logger.LogInformation($"{nameof(BookController)}.{nameof(GetBook)} returning");
 
                 return Ok(result);
             }
@@ -85,7 +84,7 @@ namespace BookApi.Controllers
 
             try
             {
-                _logger.LogInformation($"{nameof(BookController.AddBook)} calling");
+                _logger.LogInformation($"{nameof(BookController)}.{nameof(AddBook)} beginning {Request.Path}");
 
                 var book = JsonConvert.DeserializeObject<Book>(bookString);
 
@@ -97,7 +96,7 @@ namespace BookApi.Controllers
 
                 await _bookService.AddBook(book);
 
-                _logger.LogInformation($"{nameof(BookController.AddBook)} returning");
+                _logger.LogInformation($"{nameof(BookController)}.{nameof(AddBook)} returning");
 
                 return Ok();
             }
@@ -120,11 +119,11 @@ namespace BookApi.Controllers
             try
             {
 
-                _logger.LogInformation($"{nameof(BookController.DeleteBook)} calling");
+                _logger.LogInformation($"{nameof(BookController)}.{nameof(DeleteBook)} beginning {Request.Path}{Request.QueryString}");
 
                 await _bookService.DeleteBook(id);
 
-                _logger.LogInformation($"{nameof(BookController.DeleteBook)} returning");
+                _logger.LogInformation($"{nameof(BookController)}.{nameof(DeleteBook)} returning");
 
                 return NoContent();
             }

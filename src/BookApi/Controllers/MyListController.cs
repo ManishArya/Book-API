@@ -29,11 +29,11 @@ namespace BookApi.Controllers
         {
             try
             {
-                _logger.LogInformation($"{nameof(MyListController.GetMyList)} calling");
+                _logger.LogInformation($"{nameof(MyListController)}.{nameof(GetMyList)} beginning {Request.Path}");
 
                 var result = await _myListService.GetMyList();
 
-                _logger.LogInformation($"{nameof(MyListController.GetMyList)} returning");
+                _logger.LogInformation($"{nameof(MyListController)}.{nameof(GetMyList)} returning");
 
                 return Ok(result);
             }
@@ -56,11 +56,11 @@ namespace BookApi.Controllers
             {
                 if (ObjectId.TryParse(itemId, out ObjectId id))
                 {
-                    _logger.LogInformation($"{nameof(MyListController.AddItemToMyList)} calling");
+                    _logger.LogInformation($"{nameof(MyListController)}.{nameof(AddItemToMyList)} beginning {Request.Path}{Request.QueryString}");
 
                     var result = await _myListService.AddItemToMyList(itemId);
 
-                    _logger.LogInformation($"{nameof(MyListController.AddItemToMyList)} returning");
+                    _logger.LogInformation($"{nameof(MyListController)}.{nameof(AddItemToMyList)} returning");
 
                     return result == null ? NotFound() : Ok(result);
                 }
@@ -84,11 +84,11 @@ namespace BookApi.Controllers
 
             try
             {
-                _logger.LogInformation($"{nameof(MyListController.RemoveItemFromMyList)} calling");
+                _logger.LogInformation($"{nameof(MyListController)}.{nameof(RemoveItemFromMyList)} beginning {Request.Path}{Request.QueryString}");
 
                 var result = await _myListService.RemoveItemFromMyList(itemId);
 
-                _logger.LogInformation($"{nameof(MyListController.RemoveItemFromMyList)} returning");
+                _logger.LogInformation($"{nameof(MyListController)}.{nameof(RemoveItemFromMyList)} returning");
 
                 return result == null ? NotFound() : NoContent();
             }

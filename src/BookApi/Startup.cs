@@ -10,6 +10,7 @@ using BookApi.services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using Serilog.Context;
 
 namespace BookApi
 {
@@ -29,7 +31,8 @@ namespace BookApi
         {
             Configuration = configuration;
 
-            var logger = new LoggerConfiguration().
+            Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext().
                  ReadFrom.Configuration(configuration)
                  .CreateLogger();
         }
@@ -111,6 +114,13 @@ namespace BookApi
             app.UseCors("policy");
 
             app.UseAuthorization();
+
+            app.Use(async (context, next) =>
+           {
+               var userId = context.User.Identity.IsAuthenticated ? context.User.Identity.Name : "";
+               LogContext.PushProperty("UserName", userId);
+               await next();
+           });
 
             app.UseEndpoints(endpoints =>
             {

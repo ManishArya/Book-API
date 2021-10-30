@@ -30,11 +30,11 @@ namespace BookApi.Controllers
         {
             try
             {
-                _logger.LogInformation($"{nameof(GenreController.GetGenres)} begining");
+                _logger.LogInformation($"{nameof(GenreController)}.{nameof(GetGenres)} beginning {Request.Path}");
 
                 var value = await _genreService.GetGenres();
 
-                _logger.LogInformation($"{nameof(GenreController.GetGenres)} ends");
+                _logger.LogInformation($"{nameof(GenreController)}.{nameof(GetGenres)} returning");
 
                 return Ok(value);
             }
