@@ -1,22 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using BookApi.DataAccess;
 using BookApi.models;
 using BookApi.services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -31,8 +24,7 @@ namespace BookApi
         {
             Configuration = configuration;
 
-            Log.Logger = new LoggerConfiguration()
-            .Enrich.FromLogContext().
+            Log.Logger = new LoggerConfiguration().
                  ReadFrom.Configuration(configuration)
                  .CreateLogger();
         }
@@ -119,6 +111,7 @@ namespace BookApi
            {
                var userId = context.User.Identity.IsAuthenticated ? context.User.Identity.Name : "";
                LogContext.PushProperty("UserName", userId);
+               LogContext.PushProperty("IP", context.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4());
                await next();
            });
 
