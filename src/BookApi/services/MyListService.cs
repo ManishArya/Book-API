@@ -48,6 +48,7 @@ namespace BookApi.services
                 await _myListDAL.DeleteItemFromMyList(itemId);
                 return new ResponseApi<string>();
             }
+
             return null;
         }
     }

@@ -4,74 +4,46 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Logging;
 using BookApi.services;
 using System.Threading.Tasks;
-using System;
-using BookApi.constants;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.IO;
 using BookApi.models;
-
+using BookApi.filters;
 namespace BookApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Book")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class BookController : ControllerBase
+    [CustomExceptionFilter]
+    [LoggingFilter]
+    public class BookController : BaseController
     {
-
-        private readonly ILogger<BookController> _logger;
         private readonly IBookService _bookService;
 
-        public BookController(ILogger<BookController> logger, IBookService bookService)
+        public BookController(ILogger<BookController> logger, IBookService bookService) : base(logger)
         {
-            _logger = logger;
             _bookService = bookService;
         }
 
         [HttpGet("list")]
         public async Task<IActionResult> GetBooks()
         {
-            try
-            {
-                _logger.LogInformation($"{nameof(BookController)}.{nameof(GetBooks)} beginning {Request.Path}");
-
-                var movies = await _bookService.GetBooks();
-
-                _logger.LogInformation($"{nameof(BookController)}.{nameof(GetBooks)} returning");
-
-                return Ok(movies);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                return StatusCode(500, MessageConstant.ERROR_MESSAGE);
-            }
+            var movies = await _bookService.GetBooks();
+            return Ok(movies);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetBook(string id)
         {
-            try
+
+            if (id == null)
             {
-
-                if (id == null)
-                {
-                    return BadRequest();
-                }
-
-                _logger.LogInformation($"{nameof(BookController)}.{nameof(GetBook)} beginning {Request.Path}{Request.QueryString}");
-
-                var result = await _bookService.GetBookById(id);
-
-                _logger.LogInformation($"{nameof(BookController)}.{nameof(GetBook)} returning");
-
-                return Ok(result);
+                return BadRequest();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                return StatusCode(500, MessageConstant.ERROR_MESSAGE);
-            }
+
+            var result = await _bookService.GetBookById(id);
+
+            return Ok(result);
         }
 
         [HttpPost]
@@ -82,29 +54,17 @@ namespace BookApi.Controllers
                 return BadRequest();
             }
 
-            try
+            var book = JsonConvert.DeserializeObject<Book>(bookString);
+
+            using (MemoryStream memoryStream = new MemoryStream())
             {
-                _logger.LogInformation($"{nameof(BookController)}.{nameof(AddBook)} beginning {Request.Path}");
-
-                var book = JsonConvert.DeserializeObject<Book>(bookString);
-
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    await poster.OpenReadStream().CopyToAsync(memoryStream);
-                    book.Poster = memoryStream.ToArray();
-                }
-
-                await _bookService.AddBook(book);
-
-                _logger.LogInformation($"{nameof(BookController)}.{nameof(AddBook)} returning");
-
-                return Ok();
+                await poster.OpenReadStream().CopyToAsync(memoryStream);
+                book.Poster = memoryStream.ToArray();
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                return StatusCode(500, MessageConstant.ERROR_MESSAGE);
-            }
+
+            await _bookService.AddBook(book);
+
+            return Ok();
         }
 
         [HttpDelete]
@@ -116,23 +76,9 @@ namespace BookApi.Controllers
                 return BadRequest();
             }
 
-            try
-            {
+            await _bookService.DeleteBook(id);
 
-                _logger.LogInformation($"{nameof(BookController)}.{nameof(DeleteBook)} beginning {Request.Path}{Request.QueryString}");
-
-                await _bookService.DeleteBook(id);
-
-                _logger.LogInformation($"{nameof(BookController)}.{nameof(DeleteBook)} returning");
-
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-
-                _logger.LogError(ex.Message, ex);
-                return StatusCode(500, MessageConstant.ERROR_MESSAGE);
-            }
+            return NoContent();
         }
     }
 }

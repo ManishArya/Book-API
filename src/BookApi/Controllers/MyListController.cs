@@ -1,6 +1,5 @@
-using System;
 using System.Threading.Tasks;
-using BookApi.constants;
+using BookApi.filters;
 using BookApi.services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -10,38 +9,25 @@ using MongoDB.Bson;
 
 namespace BookApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/MyList")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class MyListController : ControllerBase
+    [LoggingFilter]
+    public class MyListController : BaseController
     {
         private readonly IMyListService _myListService;
-        private readonly ILogger<MyListController> _logger;
 
-        public MyListController(IMyListService myListService, ILogger<MyListController> logger)
+        public MyListController(IMyListService myListService, ILogger<MyListController> logger) : base(logger)
         {
             _myListService = myListService;
-            _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetMyList()
         {
-            try
-            {
-                _logger.LogInformation($"{nameof(MyListController)}.{nameof(GetMyList)} beginning {Request.Path}");
+            var result = await _myListService.GetMyList();
 
-                var result = await _myListService.GetMyList();
-
-                _logger.LogInformation($"{nameof(MyListController)}.{nameof(GetMyList)} returning");
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                return StatusCode(500, MessageConstant.ERROR_MESSAGE);
-            }
+            return Ok(result);
         }
 
         [HttpPost]
@@ -52,26 +38,14 @@ namespace BookApi.Controllers
                 return BadRequest();
             }
 
-            try
+            if (ObjectId.TryParse(itemId, out ObjectId id))
             {
-                if (ObjectId.TryParse(itemId, out ObjectId id))
-                {
-                    _logger.LogInformation($"{nameof(MyListController)}.{nameof(AddItemToMyList)} beginning {Request.Path}{Request.QueryString}");
+                var result = await _myListService.AddItemToMyList(itemId);
 
-                    var result = await _myListService.AddItemToMyList(itemId);
-
-                    _logger.LogInformation($"{nameof(MyListController)}.{nameof(AddItemToMyList)} returning");
-
-                    return result == null ? NotFound() : Ok(result);
-                }
-
-                return BadRequest();
+                return result == null ? NotFound() : Ok(result);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                return StatusCode(500, MessageConstant.ERROR_MESSAGE);
-            }
+
+            return BadRequest();
         }
 
         [HttpDelete]
@@ -82,21 +56,9 @@ namespace BookApi.Controllers
                 return BadRequest();
             }
 
-            try
-            {
-                _logger.LogInformation($"{nameof(MyListController)}.{nameof(RemoveItemFromMyList)} beginning {Request.Path}{Request.QueryString}");
+            var result = await _myListService.RemoveItemFromMyList(itemId);
 
-                var result = await _myListService.RemoveItemFromMyList(itemId);
-
-                _logger.LogInformation($"{nameof(MyListController)}.{nameof(RemoveItemFromMyList)} returning");
-
-                return result == null ? NotFound() : NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message, ex);
-                return StatusCode(500, MessageConstant.ERROR_MESSAGE);
-            }
+            return result == null ? NotFound() : NoContent();
         }
 
     }
