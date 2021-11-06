@@ -19,7 +19,6 @@ namespace BookApi.models
         [MinLength(1)]
         public string[] Genres { get; set; }
 
-        [Required]
         public byte[] Poster { get; set; }
     }
 }

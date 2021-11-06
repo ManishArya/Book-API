@@ -14,7 +14,6 @@ namespace BookApi.Controllers
     [Route("api/Book")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [CustomExceptionFilter]
     [LoggingFilter]
     public class BookController : BaseController
     {
@@ -56,15 +55,21 @@ namespace BookApi.Controllers
 
             var book = JsonConvert.DeserializeObject<Book>(bookString);
 
-            using (MemoryStream memoryStream = new MemoryStream())
+            if (TryValidateModel(book))
             {
-                await poster.OpenReadStream().CopyToAsync(memoryStream);
-                book.Poster = memoryStream.ToArray();
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    await poster.OpenReadStream().CopyToAsync(memoryStream);
+                    book.Poster = memoryStream.ToArray();
+                }
+
+                await _bookService.AddBook(book);
+
+                return Ok();
             }
 
-            await _bookService.AddBook(book);
-
-            return Ok();
+            return BadRequest();
         }
 
         [HttpDelete]

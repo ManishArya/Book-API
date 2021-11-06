@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using BookApi.DataAccess;
 using BookApi.models;
@@ -31,7 +32,7 @@ namespace BookApi.services
 
             if (isExists)
             {
-                return new ResponseApi<string>() { Message = "Duplicate record" };
+                throw new InvalidOperationException("This book is already exists in MyList");
             }
 
             await _myListDAL.AddItemToMyList(book.Id);

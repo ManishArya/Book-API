@@ -16,7 +16,7 @@ namespace BookApi.Controllers
 
         void IBaseController.LogException(string message, Exception ex)
         {
-            _logger.LogError($"{ControllerContext.ActionDescriptor.ControllerName}.{ControllerContext.ActionDescriptor.ActionName} {message}", ex);
+            _logger.LogError(ex, $"{ControllerContext.ActionDescriptor.ControllerName}.{ControllerContext.ActionDescriptor.ActionName} {message}");
         }
 
         void IBaseController.LogInformation(string message)
