@@ -1,3 +1,4 @@
+using System.Net;
 using System.Threading.Tasks;
 using BookApi.filters;
 using BookApi.services;
@@ -54,5 +55,15 @@ namespace BookApi.Controllers
             return result == null ? NotFound() : NoContent();
         }
 
+        [HttpGet("checckiteminmylist")]
+        public async Task<IActionResult> CheckItemInMyList(string itemId)
+        {
+            if (itemId == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(await _myListService.CheckItemInMyList(itemId));
+        }
     }
 }

@@ -52,5 +52,7 @@ namespace BookApi.services
 
             return null;
         }
+
+        public async Task<bool> CheckItemInMyList(string itemId) => await _myListDAL.CheckItemExistsInMyList(itemId);
     }
 }

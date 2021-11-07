@@ -10,5 +10,7 @@ namespace BookApi.services
         Task<ResponseApi<string>> RemoveItemFromMyList(string itemId);
 
         Task<ResponseApiList<MyList>> GetMyList();
+
+        Task<bool> CheckItemInMyList(string id);
     }
 }
