@@ -7,10 +7,10 @@ namespace BookApi.DataAccess
     {
         Task<IEnumerable<T>> GetAll();
 
-        Task<string> Save(T baseObject);
+        Task<bool> Save(T baseObject);
 
         Task<T> GetById(string id);
 
-        Task<string> Remove(string id);
+        Task<bool> Remove(string id);
     }
 }

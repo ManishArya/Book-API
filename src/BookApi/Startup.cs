@@ -59,12 +59,12 @@ namespace BookApi
 
             services.AddHttpContextAccessor()
             .AddSingleton<IDatabaseClient, DatabaseClient>()
-            .AddSingleton<IBookService, BookService>().
-            AddSingleton(typeof(IBaseDAL<Book>), typeof(BookDAL))
-            .AddSingleton<IGenreService, GenreService>()
-            .AddSingleton(typeof(IBaseDAL<Genre>), typeof(GenreDAL))
-            .AddSingleton<IMyListService, MyListService>()
-            .AddSingleton<IMyListDAL, MyListDAL>()
+            .AddScoped<IBookService, BookService>().
+            AddScoped(typeof(IBaseDAL<Book>), typeof(BookDAL))
+            .AddScoped<IGenreService, GenreService>()
+            .AddScoped(typeof(IBaseDAL<Genre>), typeof(GenreDAL))
+            .AddScoped<IMyListService, MyListService>()
+            .AddScoped<IMyListDAL, MyListDAL>()
             .AddControllers();
 
             services.AddSwaggerGen(c =>

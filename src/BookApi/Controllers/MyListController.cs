@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
 
 namespace BookApi.Controllers
 {
@@ -38,14 +37,8 @@ namespace BookApi.Controllers
                 return BadRequest();
             }
 
-            if (ObjectId.TryParse(itemId, out ObjectId id))
-            {
-                var result = await _myListService.AddItemToMyList(itemId);
-
-                return result == null ? NotFound() : Ok(result);
-            }
-
-            return BadRequest();
+            var result = await _myListService.AddItemToMyList(itemId);
+            return result == null ? NotFound() : Ok(result);
         }
 
         [HttpDelete]

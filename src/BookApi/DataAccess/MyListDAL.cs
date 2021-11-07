@@ -2,18 +2,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookApi.models;
 using Microsoft.AspNetCore.Http;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace BookApi.DataAccess
 {
     public class MyListDAL : BaseDAL<MyList>, IMyListDAL
     {
-
-        private readonly string _username;
-
-        public MyListDAL(IHttpContextAccessor contextAccessor, IDatabaseClient client) : base(client, "myList")
+        public MyListDAL(IHttpContextAccessor contextAccessor, IDatabaseClient client) : base(contextAccessor, client, "myList")
         {
-            _username = contextAccessor.HttpContext.User.Identity.Name;
         }
 
         public override async Task<IEnumerable<MyList>> GetAll()
@@ -38,7 +35,9 @@ namespace BookApi.DataAccess
 
         public async Task<bool> CheckItemExistsInMyList(string itemId)
         {
-            var result = await _collections.CountDocumentsAsync(c => c.BookId == itemId && c.Username == _username);
+            ObjectId objectId = GetObjectId(itemId);
+
+            var result = await _collections.CountDocumentsAsync(c => c.BookId == objectId.ToString() && c.Username == _username);
 
             if (result == 0)
             {

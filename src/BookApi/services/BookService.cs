@@ -12,10 +12,10 @@ namespace BookApi.services
 
         public async Task<IEnumerable<Book>> GetBooks() => await _bookDAL.GetAll();
 
-        public async Task<string> AddBook(Book book) => await _bookDAL.Save(book);
+        public async Task<bool> AddBook(Book book) => await _bookDAL.Save(book);
 
         public async Task<Book> GetBookById(string id) => await _bookDAL.GetById(id);
 
-        public async Task<string> DeleteBook(string id) => await _bookDAL.Remove(id);
+        public async Task<bool> DeleteBook(string id) => await _bookDAL.Remove(id);
     }
 }

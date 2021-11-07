@@ -10,8 +10,8 @@ namespace BookApi.services
 
         Task<Book> GetBookById(string id);
 
-        Task<string> AddBook(Book book);
+        Task<bool> AddBook(Book book);
 
-        Task<string> DeleteBook(string id);
+        Task<bool> DeleteBook(string id);
     }
 }
