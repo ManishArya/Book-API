@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Security;
 using BookApi.constants;
 using BookApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,11 @@ namespace BookApi.filters
                     {
                         context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         message = exception.Message;
+                    }
+                    else if (context.Exception is SecurityException securityException)
+                    {
+                        context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        message = securityException.Message;
                     }
                     else
                     {

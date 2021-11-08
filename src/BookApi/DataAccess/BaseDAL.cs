@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BookApi.models;
 using Microsoft.AspNetCore.Http;
@@ -11,11 +12,14 @@ namespace BookApi.DataAccess
     public class BaseDAL<T> : IBaseDAL<T> where T : Base
     {
         protected readonly string _username;
+
+        protected readonly bool isAdmin;
         protected readonly IMongoCollection<T> _collections;
 
         public BaseDAL(IHttpContextAccessor contextAccessor, IDatabaseClient client, string collectionName)
         {
             _username = contextAccessor.HttpContext.User.Identity.Name;
+            isAdmin = bool.Parse(contextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "isAdmin")?.Value);
             _collections = client.Database.GetCollection<T>(collectionName);
         }
 
@@ -40,7 +44,7 @@ namespace BookApi.DataAccess
             return await (await _collections.FindAsync(c => c.Id == objectId.ToString()))?.FirstAsync<T>();
         }
 
-        public async Task<bool> Remove(string id)
+        public virtual async Task<bool> Remove(string id)
         {
             await _collections.DeleteOneAsync(c => c.Id == id);
             return true;

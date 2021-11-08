@@ -1,3 +1,5 @@
+using System.Security;
+using System.Threading.Tasks;
 using BookApi.models;
 using Microsoft.AspNetCore.Http;
 
@@ -8,6 +10,16 @@ namespace BookApi.DataAccess
         public BookDAL(IHttpContextAccessor contextAccessor, IDatabaseClient client) : base(contextAccessor, client, "books")
         {
 
+        }
+
+        public override Task<bool> Remove(string id)
+        {
+            if (isAdmin)
+            {
+                return base.Remove(id);
+            }
+
+            throw new SecurityException("Permission denied");
         }
     }
 }
