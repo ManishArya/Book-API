@@ -48,9 +48,14 @@ namespace BookApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddBook([FromForm] string bookString, [FromForm] IFormFile poster)
         {
-            if (poster == null || bookString == null)
+            if (bookString == null)
             {
                 return BadRequest();
+            }
+
+            if (poster == null)
+            {
+                ModelState.AddModelError("Poster", "The Poster field is required");
             }
 
             var book = JsonConvert.DeserializeObject<Book>(bookString);
@@ -69,7 +74,7 @@ namespace BookApi.Controllers
                 return Ok();
             }
 
-            return BadRequest();
+            return BadRequest(ModelState);
         }
 
         [HttpDelete]

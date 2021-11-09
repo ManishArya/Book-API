@@ -9,9 +9,11 @@ namespace BookApi.models
         [Required]
         public string Name { get; set; }
 
+        [Required]
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime ReleaseDate { get; set; }
 
+        [Required]
         [MaxLength(200)]
         public string Description { get; set; }
 

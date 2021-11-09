@@ -12,6 +12,16 @@ namespace BookApi.DataAccess
 
         }
 
+        public override Task<bool> Save(Book book)
+        {
+            if (isAdmin)
+            {
+                return base.Save(book);
+            }
+
+            throw new SecurityException("Permission denied");
+        }
+
         public override Task<bool> Remove(string id)
         {
             if (isAdmin)

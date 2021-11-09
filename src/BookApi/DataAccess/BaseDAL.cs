@@ -23,7 +23,7 @@ namespace BookApi.DataAccess
             _collections = client.Database.GetCollection<T>(collectionName);
         }
 
-        public async Task<bool> Save(T baseObject)
+        public virtual async Task<bool> Save(T baseObject)
         {
             baseObject.CreatedAt = DateTime.Now;
             baseObject.CreatedBy = _username;
@@ -40,7 +40,7 @@ namespace BookApi.DataAccess
 
         public async Task<T> GetById(string id)
         {
-            ObjectId objectId = GetObjectId(id);
+            var objectId = GetObjectId(id);
             return await (await _collections.FindAsync(c => c.Id == objectId.ToString()))?.FirstAsync<T>();
         }
 
