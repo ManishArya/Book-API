@@ -27,7 +27,7 @@ namespace BookApi.Controllers
         public async Task<IActionResult> GetGenres()
         {
             var value = await _genreService.GetGenres();
-            return Ok(value);
+            return ToSendResponse(value);
         }
 
         #endregion Genres

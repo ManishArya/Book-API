@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookApi.models;
 
@@ -5,12 +6,12 @@ namespace BookApi.services
 {
     public interface IMyListService
     {
-        Task<ResponseApi<string>> AddItemToMyList(string ItemId);
+        Task<BaseResponse> AddItemToMyList(string ItemId);
 
-        Task<ResponseApi<string>> RemoveItemFromMyList(string itemId);
+        Task<BaseResponse> RemoveItemFromMyList(string itemId);
 
-        Task<ResponseApiList<MyList>> GetMyList();
+        Task<ResponseApi<IEnumerable<MyList>>> GetMyList();
 
-        Task<bool> CheckItemInMyList(string id);
+        Task<ResponseApi<bool>> CheckItemInMyList(string id);
     }
 }

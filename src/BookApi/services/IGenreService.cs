@@ -6,6 +6,6 @@ namespace BookApi.services
 {
     public interface IGenreService
     {
-        Task<IEnumerable<Genre>> GetGenres();
+        Task<ResponseApi<IEnumerable<Genre>>> GetGenres();
     }
 }

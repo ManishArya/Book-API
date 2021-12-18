@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using BookApi.DataAccess;
 using BookApi.models;
@@ -17,42 +19,42 @@ namespace BookApi.services
             _bookService = bookService;
         }
 
-        public async Task<ResponseApiList<MyList>> GetMyList() => new ResponseApiList<MyList> { Data = await _myListDAL.GetAll() };
+        public async Task<ResponseApi<IEnumerable<MyList>>> GetMyList() => new ResponseApi<IEnumerable<MyList>>(await _myListDAL.GetAll());
 
-        public async Task<ResponseApi<string>> AddItemToMyList(string bookId)
+        public async Task<BaseResponse> AddItemToMyList(string bookId)
         {
             var book = await _bookService.GetBookById(bookId);
 
-            if (book == null)
+            if (book.Content == null)
             {
-                return null;
+                return new BaseResponse("No Book found", HttpStatusCode.NotFound);
             }
 
-            var isExists = await _myListDAL.CheckItemExistsInMyList(book.Id);
+            var isExists = await _myListDAL.CheckItemExistsInMyList(book.Content.Id);
 
             if (isExists)
             {
                 throw new InvalidOperationException("This book is already exists in MyList");
             }
 
-            await _myListDAL.AddItemToMyList(book.Id);
+            await _myListDAL.AddItemToMyList(book.Content.Id);
 
-            return new ResponseApi<string>();
+            return new BaseResponse("Book Added in my list");
         }
 
-        public async Task<ResponseApi<string>> RemoveItemFromMyList(string itemId)
+        public async Task<BaseResponse> RemoveItemFromMyList(string itemId)
         {
             var isExists = await _myListDAL.CheckItemExistsInMyList(itemId);
 
             if (isExists)
             {
                 await _myListDAL.DeleteItemFromMyList(itemId);
-                return new ResponseApi<string>();
+                return new BaseResponse("Book removed from my list successfully", HttpStatusCode.NoContent);
             }
 
-            return null;
+            return new BaseResponse("No Book found", HttpStatusCode.Gone);
         }
 
-        public async Task<bool> CheckItemInMyList(string itemId) => await _myListDAL.CheckItemExistsInMyList(itemId);
+        public async Task<ResponseApi<bool>> CheckItemInMyList(string itemId) { await _myListDAL.CheckItemExistsInMyList(itemId); return new ResponseApi<bool>(true); }
     }
 }

@@ -11,6 +11,6 @@ namespace BookApi.services
 
         public GenreService(IBaseDAL<Genre> genreDAL) => _genreDAL = genreDAL;
 
-        public async Task<IEnumerable<Genre>> GetGenres() => await _genreDAL.GetAll();
+        public async Task<ResponseApi<IEnumerable<Genre>>> GetGenres() => new ResponseApi<IEnumerable<Genre>>(await _genreDAL.GetAll());
     }
 }

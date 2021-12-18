@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using BookApi.DataAccess;
 using BookApi.models;
@@ -10,12 +11,12 @@ namespace BookApi.services
         private readonly IBaseDAL<Book> _bookDAL;
         public BookService(IBaseDAL<Book> bookDAL) => _bookDAL = bookDAL;
 
-        public async Task<IEnumerable<Book>> GetBooks() => await _bookDAL.GetAll();
+        public async Task<ResponseApi<IEnumerable<Book>>> GetBooks() => new ResponseApi<IEnumerable<Book>>(await _bookDAL.GetAll());
 
-        public async Task<bool> AddBook(Book book) => await _bookDAL.Save(book);
+        public async Task<BaseResponse> AddBook(Book book) { await _bookDAL.Save(book); return new BaseResponse("Book save successfully"); }
 
-        public async Task<Book> GetBookById(string id) => await _bookDAL.GetById(id);
+        public async Task<ResponseApi<Book>> GetBookById(string id) => new ResponseApi<Book>(await _bookDAL.GetById(id));
 
-        public async Task<bool> DeleteBook(string id) => await _bookDAL.Remove(id);
+        public async Task<BaseResponse> DeleteBook(string id) { await _bookDAL.Remove(id); return new BaseResponse("Book Delete Successfully", HttpStatusCode.NoContent); }
     }
 }

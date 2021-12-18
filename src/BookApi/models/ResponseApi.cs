@@ -1,14 +1,18 @@
+using System.Net;
+
 namespace BookApi.models
 {
-    public class ResponseApi<T>
+    public class ResponseApi<T> : BaseResponse
     {
-        public bool IsSuccess { get; set; }
+        public ResponseApi(T content) : this(content, HttpStatusCode.OK)
+        {
+        }
 
-        public int Code { get; set; }
+        public ResponseApi(T content, HttpStatusCode statusCode) : base(statusCode)
+        {
+            Content = content;
+        }
 
-        public string Message { get; set; }
-
-        public T Data { get; set; }
-
+        public T Content { get; set; }
     }
 }

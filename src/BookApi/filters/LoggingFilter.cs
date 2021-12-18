@@ -3,6 +3,7 @@ using System.Net;
 using System.Security;
 using BookApi.constants;
 using BookApi.Controllers;
+using BookApi.models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -18,6 +19,7 @@ namespace BookApi.filters
                 {
                     baseController.LogException(context.Exception.Message, context.Exception);
                     string message = string.Empty;
+
                     if (context.Exception is InvalidOperationException exception)
                     {
                         context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
@@ -33,7 +35,8 @@ namespace BookApi.filters
                         context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                         message = MessageConstant.ERROR_MESSAGE;
                     }
-                    context.Result = new JsonResult(message);
+
+                    context.Result = new JsonResult(new BaseResponse(message, (HttpStatusCode)context.HttpContext.Response.StatusCode));
                     context.ExceptionHandled = true;
                 }
                 baseController.LogInformation("returning");

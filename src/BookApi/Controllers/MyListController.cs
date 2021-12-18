@@ -27,7 +27,7 @@ namespace BookApi.Controllers
         {
             var result = await _myListService.GetMyList();
 
-            return Ok(result);
+            return ToSendResponse(result);
         }
 
         [HttpPost]
@@ -39,7 +39,7 @@ namespace BookApi.Controllers
             }
 
             var result = await _myListService.AddItemToMyList(itemId);
-            return result == null ? NotFound() : Ok(result);
+            return ToSendResponse(result);
         }
 
         [HttpDelete]
@@ -52,7 +52,7 @@ namespace BookApi.Controllers
 
             var result = await _myListService.RemoveItemFromMyList(itemId);
 
-            return result == null ? NotFound() : NoContent();
+            return ToSendResponse(result);
         }
 
         [HttpGet("checckiteminmylist")]
@@ -63,7 +63,7 @@ namespace BookApi.Controllers
                 return BadRequest();
             }
 
-            return Ok(await _myListService.CheckItemInMyList(itemId));
+            return ToSendResponse(await _myListService.CheckItemInMyList(itemId));
         }
     }
 }

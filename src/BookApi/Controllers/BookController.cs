@@ -27,8 +27,8 @@ namespace BookApi.Controllers
         [HttpGet("list")]
         public async Task<IActionResult> GetBooks()
         {
-            var movies = await _bookService.GetBooks();
-            return Ok(movies);
+            var response = await _bookService.GetBooks();
+            return ToSendResponse(response);
         }
 
         [HttpGet]
@@ -42,7 +42,7 @@ namespace BookApi.Controllers
 
             var result = await _bookService.GetBookById(id);
 
-            return Ok(result);
+            return ToSendResponse(result);
         }
 
         [HttpPost]
@@ -69,12 +69,12 @@ namespace BookApi.Controllers
                     book.Poster = memoryStream.ToArray();
                 }
 
-                await _bookService.AddBook(book);
+                var response = await _bookService.AddBook(book);
 
-                return Ok();
+                return ToSendResponse(response);
             }
 
-            return BadRequest(ModelState);
+            return ToSendResponse(ModelState);
         }
 
         [HttpDelete]
@@ -86,9 +86,9 @@ namespace BookApi.Controllers
                 return BadRequest();
             }
 
-            await _bookService.DeleteBook(id);
+            var response = await _bookService.DeleteBook(id);
 
-            return NoContent();
+            return ToSendResponse(response);
         }
     }
 }

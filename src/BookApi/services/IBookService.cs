@@ -6,12 +6,12 @@ namespace BookApi.services
 {
     public interface IBookService
     {
-        Task<IEnumerable<Book>> GetBooks();
+        Task<ResponseApi<IEnumerable<Book>>> GetBooks();
 
-        Task<Book> GetBookById(string id);
+        Task<ResponseApi<Book>> GetBookById(string id);
 
-        Task<bool> AddBook(Book book);
+        Task<BaseResponse> AddBook(Book book);
 
-        Task<bool> DeleteBook(string id);
+        Task<BaseResponse> DeleteBook(string id);
     }
 }

@@ -2,8 +2,12 @@ using System.Collections.Generic;
 
 namespace BookApi.models
 {
-    public class ResponseApiList<T>
+    public class ResponseApiList<T> : BaseResponse
     {
-        public IEnumerable<T> Data { get; set; }
+        public ResponseApiList() : base("")
+        {
+
+        }
+        public IEnumerable<T> Content { get; set; }
     }
 }
