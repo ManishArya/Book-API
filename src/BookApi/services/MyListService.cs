@@ -49,12 +49,16 @@ namespace BookApi.services
             if (isExists)
             {
                 await _myListDAL.DeleteItemFromMyList(itemId);
-                return new BaseResponse("Book removed from my list successfully", HttpStatusCode.NoContent);
+                return new BaseResponse("Book removed from my list successfully", HttpStatusCode.OK);
             }
 
             return new BaseResponse("No Book found", HttpStatusCode.Gone);
         }
 
-        public async Task<ResponseApi<bool>> CheckItemInMyList(string itemId) { await _myListDAL.CheckItemExistsInMyList(itemId); return new ResponseApi<bool>(true); }
+        public async Task<ResponseApi<bool>> CheckItemInMyList(string itemId)
+        {
+            var result = await _myListDAL.CheckItemExistsInMyList(itemId);
+            return new ResponseApi<bool>(result);
+        }
     }
 }

@@ -9,6 +9,10 @@ using Newtonsoft.Json;
 using System.IO;
 using BookApi.models;
 using BookApi.filters;
+using System.Linq;
+using BookApi.extensions;
+using System;
+
 namespace BookApi.Controllers
 {
     [Route("api/Book")]
@@ -17,6 +21,7 @@ namespace BookApi.Controllers
     [LoggingFilter]
     public class BookController : BaseController
     {
+        private readonly string[] validExtensions = new string[] { "png", "jpg", "jpeg", "gif" };
         private readonly IBookService _bookService;
 
         public BookController(ILogger<BookController> logger, IBookService bookService) : base(logger)
@@ -53,9 +58,10 @@ namespace BookApi.Controllers
                 return BadRequest();
             }
 
-            if (poster == null)
+            if (!this.IsPosterIsImage(poster, out string errorMessage))
             {
-                ModelState.AddModelError("Poster", "The Poster field is required");
+
+                ModelState.AddModelError("Poster", errorMessage);
             }
 
             var book = JsonConvert.DeserializeObject<Book>(bookString);
@@ -89,6 +95,34 @@ namespace BookApi.Controllers
             var response = await _bookService.DeleteBook(id);
 
             return ToSendResponse(response);
+        }
+
+        private bool IsPosterIsImage(IFormFile poster, out string errorMessage)
+        {
+            if (poster == null)
+            {
+                errorMessage = "Poster field is required";
+                return false;
+            }
+
+            var extension = poster.FileName.ToGetExtension();
+
+            if (!validExtensions.Any(v => v == extension))
+            {
+                errorMessage = "Poster must be either of jpg or png or gif.";
+                return false;
+            }
+
+            var type = poster.ContentType;
+
+            if (!type.Contains("image/", StringComparison.OrdinalIgnoreCase))
+            {
+                errorMessage = "Poster must be either of jpg or png or gif.";
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            return true;
         }
     }
 }

@@ -17,6 +17,6 @@ namespace BookApi.services
 
         public async Task<ResponseApi<Book>> GetBookById(string id) => new ResponseApi<Book>(await _bookDAL.GetById(id));
 
-        public async Task<BaseResponse> DeleteBook(string id) { await _bookDAL.Remove(id); return new BaseResponse("Book Delete Successfully", HttpStatusCode.NoContent); }
+        public async Task<BaseResponse> DeleteBook(string id) { await _bookDAL.Remove(id); return new BaseResponse("Book Delete Successfully", HttpStatusCode.OK); }
     }
 }
