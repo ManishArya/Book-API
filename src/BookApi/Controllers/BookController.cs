@@ -58,7 +58,7 @@ namespace BookApi.Controllers
                 return BadRequest();
             }
 
-            if (!this.IsPosterIsImage(poster, out string errorMessage))
+            if (!this.ValidatePoster(poster, out string errorMessage))
             {
 
                 ModelState.AddModelError("Poster", errorMessage);
@@ -97,8 +97,10 @@ namespace BookApi.Controllers
             return ToSendResponse(response);
         }
 
-        private bool IsPosterIsImage(IFormFile poster, out string errorMessage)
+        private bool ValidatePoster(IFormFile poster, out string errorMessage)
         {
+            errorMessage = string.Empty;
+
             if (poster == null)
             {
                 errorMessage = "Poster field is required";
@@ -121,7 +123,15 @@ namespace BookApi.Controllers
                 return false;
             }
 
-            errorMessage = string.Empty;
+            var allowedFileSize = 1 * 1024 * 1000;
+
+            if (poster.Length > allowedFileSize)
+            {
+
+                errorMessage = "Poster should be either 1 MB or less.";
+                return false;
+            }
+
             return true;
         }
     }
