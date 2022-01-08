@@ -107,17 +107,13 @@ namespace BookApi.Controllers
                 return false;
             }
 
-            var extension = poster.FileName.ToGetExtension();
-
-            if (!validExtensions.Any(v => v == extension))
+            if (poster.Length == 0)
             {
-                errorMessage = "Poster must be either of jpg or png or gif.";
+                errorMessage = "Poster can not be zero size.";
                 return false;
             }
 
-            var type = poster.ContentType;
-
-            if (!type.Contains("image/", StringComparison.OrdinalIgnoreCase))
+            if (!this.IsPosterValidImage(poster))
             {
                 errorMessage = "Poster must be either of jpg or png or gif.";
                 return false;
@@ -127,8 +123,26 @@ namespace BookApi.Controllers
 
             if (poster.Length > allowedFileSize)
             {
-
                 errorMessage = "Poster should be either 1 MB or less.";
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool IsPosterValidImage(IFormFile poster)
+        {
+            var extension = poster.FileName.ToGetExtension();
+
+            if (!validExtensions.Any(v => v == extension))
+            {
+                return false;
+            }
+
+            var type = poster.ContentType;
+
+            if (!type.Contains("image/", StringComparison.OrdinalIgnoreCase))
+            {
                 return false;
             }
 
