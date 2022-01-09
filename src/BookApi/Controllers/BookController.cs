@@ -51,27 +51,18 @@ namespace BookApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddBook([FromForm] string bookString, [FromForm] IFormFile poster)
+        public async Task<IActionResult> AddBook([FromForm] BookForm bookForm)
         {
-            if (bookString == null)
+            if (bookForm.BookString == null)
             {
                 return BadRequest();
             }
 
-            if (!this.ValidatePoster(poster, out string errorMessage))
+            if (TryValidateBookForm(bookForm, out Book book))
             {
-
-                ModelState.AddModelError("Poster", errorMessage);
-            }
-
-            var book = JsonConvert.DeserializeObject<Book>(bookString);
-
-            if (TryValidateModel(book))
-            {
-
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    await poster.OpenReadStream().CopyToAsync(memoryStream);
+                    await bookForm.Poster.OpenReadStream().CopyToAsync(memoryStream);
                     book.Poster = memoryStream.ToArray();
                 }
 
@@ -97,25 +88,38 @@ namespace BookApi.Controllers
             return ToSendResponse(response);
         }
 
-        private bool ValidatePoster(IFormFile poster, out string errorMessage)
+        private bool TryValidateBookForm(BookForm bookForm, out Book book)
+        {
+            if (!TryValidatePoster(bookForm.Poster, out string errorMessage))
+            {
+
+                ModelState.AddModelError("Poster", errorMessage);
+            }
+
+            book = JsonConvert.DeserializeObject<Book>(bookForm.BookString);
+
+            return TryValidateModel(book);
+        }
+
+        private bool TryValidatePoster(IFormFile poster, out string errorMessage)
         {
             errorMessage = string.Empty;
 
             if (poster == null)
             {
-                errorMessage = "Poster field is required";
+                errorMessage = "poster field is required";
                 return false;
             }
 
             if (poster.Length == 0)
             {
-                errorMessage = "Poster can not be zero size.";
+                errorMessage = "poster can not be zero size.";
                 return false;
             }
 
-            if (!this.IsPosterValidImage(poster))
+            if (!IsPosterValidImage(poster))
             {
-                errorMessage = "Poster must be either of jpg or png or gif.";
+                errorMessage = "poster must be either of jpg or png or gif.";
                 return false;
             }
 
@@ -123,7 +127,7 @@ namespace BookApi.Controllers
 
             if (poster.Length > allowedFileSize)
             {
-                errorMessage = "Poster should be either 1 MB or less.";
+                errorMessage = "poster should be either 1 MB or less.";
                 return false;
             }
 
