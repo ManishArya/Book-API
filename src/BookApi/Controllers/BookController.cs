@@ -12,6 +12,7 @@ using BookApi.filters;
 using System.Linq;
 using BookApi.extensions;
 using System;
+using System.Collections.Generic;
 
 namespace BookApi.Controllers
 {
@@ -74,16 +75,16 @@ namespace BookApi.Controllers
             return ToSendResponse(ModelState);
         }
 
-        [HttpDelete]
+        [HttpPost("delete")]
 
-        public async Task<IActionResult> DeleteBook(string id)
+        public async Task<IActionResult> DeleteBooks(List<string> ids)
         {
-            if (id == null)
+            if (ids == null)
             {
                 return BadRequest();
             }
 
-            var response = await _bookService.DeleteBook(id);
+            var response = await _bookService.DeleteBooks(ids);
 
             return ToSendResponse(response);
         }
@@ -107,19 +108,19 @@ namespace BookApi.Controllers
 
             if (poster == null)
             {
-                errorMessage = "poster field is required";
+                errorMessage = "poster is required.";
                 return false;
             }
 
             if (poster.Length == 0)
             {
-                errorMessage = "poster can not be zero size.";
+                errorMessage = "poster must have content.";
                 return false;
             }
 
             if (!IsPosterValidImage(poster))
             {
-                errorMessage = "poster must be either of jpg or png or gif.";
+                errorMessage = "upload poster either jpg or png or gif.";
                 return false;
             }
 
@@ -127,7 +128,7 @@ namespace BookApi.Controllers
 
             if (poster.Length > allowedFileSize)
             {
-                errorMessage = "poster should be either 1 MB or less.";
+                errorMessage = "poster size cannot exceed more than 1 MB.";
                 return false;
             }
 

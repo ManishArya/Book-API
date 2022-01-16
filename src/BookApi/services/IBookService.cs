@@ -12,6 +12,6 @@ namespace BookApi.services
 
         Task<BaseResponse> AddBook(Book book);
 
-        Task<BaseResponse> DeleteBook(string id);
+        Task<BaseResponse> DeleteBooks(List<string> ids);
     }
 }

@@ -14,10 +14,10 @@ namespace BookApi.models
         public DateTime ReleaseDate { get; set; }
 
         [Required(ErrorMessage = "description is required.")]
-        [MaxLength(200, ErrorMessage = "description can not exceed 200 characters.")]
+        [MaxLength(200, ErrorMessage = "description is allowed upto 200 characters.")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "genres is required.")]
+        [Required(ErrorMessage = "genre is required.")]
         [MinLength(1)]
         public string[] Genres { get; set; }
 

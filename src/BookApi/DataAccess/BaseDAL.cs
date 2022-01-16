@@ -50,6 +50,15 @@ namespace BookApi.DataAccess
             return true;
         }
 
+        public virtual async Task<bool> Remove(List<string> ids)
+        {
+            foreach (var id in ids)
+            {
+                await Remove(id);
+            }
+            return true;
+        }
+
         protected ObjectId GetObjectId(string id)
         {
             if (ObjectId.TryParse(id, out ObjectId objectId))
