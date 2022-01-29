@@ -12,5 +12,7 @@ namespace BookApi.DataAccess
         Task<T> GetById(string id);
 
         Task<bool> Remove(List<string> ids);
+
+        Task<bool> Remove(string id);
     }
 }

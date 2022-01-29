@@ -14,6 +14,7 @@ namespace BookApi.DataAccess
         protected readonly string _username;
 
         protected readonly bool isAdmin;
+
         protected readonly IMongoCollection<T> _collections;
 
         public BaseDAL(IHttpContextAccessor contextAccessor, IDatabaseClient client, string collectionName)
@@ -22,6 +23,8 @@ namespace BookApi.DataAccess
             isAdmin = bool.Parse(contextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "isAdmin")?.Value);
             _collections = client.Database.GetCollection<T>(collectionName);
         }
+
+        protected FilterDefinitionBuilder<T> FilterBuilder => Builders<T>.Filter;
 
         public virtual async Task<bool> Save(T baseObject)
         {
@@ -44,20 +47,23 @@ namespace BookApi.DataAccess
             return await (await _collections.FindAsync(c => c.Id == objectId.ToString()))?.FirstAsync<T>();
         }
 
-        public virtual async Task<bool> Remove(string id)
+        public virtual Task<bool> Remove(string id) => throw new NotImplementedException();
+
+        public virtual Task<bool> Remove(List<string> ids) => throw new NotImplementedException();
+
+        protected async Task<bool> RemoveMany(FilterDefinition<T> filterDefinition)
         {
-            await _collections.DeleteOneAsync(c => c.Id == id);
+            await _collections.DeleteManyAsync(filterDefinition);
             return true;
         }
 
-        public virtual async Task<bool> Remove(List<string> ids)
+        protected async Task<bool> RemoveOne(FilterDefinition<T> filterDefinition)
         {
-            foreach (var id in ids)
-            {
-                await Remove(id);
-            }
+            await _collections.DeleteOneAsync(filterDefinition);
             return true;
         }
+
+        protected async Task<long> CountDocumentsAsync(FilterDefinition<T> filterDefinition) => await _collections.CountDocumentsAsync(filterDefinition);
 
         protected ObjectId GetObjectId(string id)
         {

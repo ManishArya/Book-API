@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Security;
 using System.Threading.Tasks;
 using BookApi.models;
@@ -22,11 +23,12 @@ namespace BookApi.DataAccess
             throw new SecurityException("Permission denied");
         }
 
-        public override Task<bool> Remove(string id)
+        public override Task<bool> Remove(List<string> ids)
         {
             if (isAdmin)
             {
-                return base.Remove(id);
+                var filterDefinition = FilterBuilder.In(f => f.Id, ids);
+                return base.RemoveMany(filterDefinition);
             }
 
             throw new SecurityException("Permission denied");

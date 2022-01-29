@@ -15,7 +15,7 @@ namespace BookApi.DataAccess
 
         public override async Task<IEnumerable<MyList>> GetAll()
         {
-            var filter = Builders<MyList>.Filter.Eq(m => m.Username, _username);
+            var filter = FilterBuilder.Eq(m => m.Username, _username);
 
             return (await _collections.Aggregate().
                                Match(filter)
@@ -37,19 +37,27 @@ namespace BookApi.DataAccess
         {
             ObjectId objectId = GetObjectId(itemId);
 
-            var result = await _collections.CountDocumentsAsync(c => c.BookId == objectId.ToString() && c.Username == _username);
+            var filterDefinition = FilterBuilder.Where(f => f.BookId == objectId.ToString() && f.Username == _username);
 
-            if (result == 0)
-            {
-                return false;
-            }
-            return true;
+            var result = await base.CountDocumentsAsync(filterDefinition);
+
+            return result == 0 ? false : true;
         }
 
         public async Task<bool> DeleteItemFromMyList(string itemId)
         {
-            await _collections.DeleteOneAsync(c => c.BookId == itemId);
+            var filterDefinition = FilterBuilder.Where(f => f.BookId == itemId && f.Username == _username);
+
+            await base.RemoveOne(filterDefinition);
+
             return true;
+        }
+
+        public async Task<long> GetListCounts()
+        {
+            var filter = FilterBuilder.Eq(m => m.Username, _username);
+
+            return await base.CountDocumentsAsync(filter);
         }
     }
 }

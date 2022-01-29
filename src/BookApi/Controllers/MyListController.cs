@@ -65,5 +65,11 @@ namespace BookApi.Controllers
 
             return ToSendResponse(await _myListService.CheckItemInMyList(itemId));
         }
+
+        [HttpGet("counts")]
+        public async Task<IActionResult> GetListCounts()
+        {
+            return ToSendResponse(await _myListService.GetListCounts());
+        }
     }
 }

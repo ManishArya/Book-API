@@ -60,5 +60,12 @@ namespace BookApi.services
             var result = await _myListDAL.CheckItemExistsInMyList(itemId);
             return new ResponseApi<bool>(result);
         }
+
+        public async Task<ResponseApi<long>> GetListCounts()
+        {
+            var result = await _myListDAL.GetListCounts();
+
+            return new ResponseApi<long>(result);
+        }
     }
 }
