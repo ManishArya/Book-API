@@ -29,7 +29,7 @@ namespace BookApi.DataAccess
             myList.BookId = itemId;
             myList.Username = _username;
 
-            await base.Save(myList);
+            await Save(myList);
             return true;
         }
 
@@ -39,7 +39,7 @@ namespace BookApi.DataAccess
 
             var filterDefinition = FilterBuilder.Where(f => f.BookId == objectId.ToString() && f.Username == _username);
 
-            var result = await base.CountDocumentsAsync(filterDefinition);
+            var result = await CountDocumentsAsync(filterDefinition);
 
             return result == 0 ? false : true;
         }
@@ -48,7 +48,7 @@ namespace BookApi.DataAccess
         {
             var filterDefinition = FilterBuilder.Where(f => f.BookId == itemId && f.Username == _username);
 
-            await base.RemoveOne(filterDefinition);
+            await RemoveOne(filterDefinition);
 
             return true;
         }
@@ -58,6 +58,13 @@ namespace BookApi.DataAccess
             var filter = FilterBuilder.Eq(m => m.Username, _username);
 
             return await base.CountDocumentsAsync(filter);
+        }
+
+        public override Task<bool> Remove(IEnumerable<string> ids)
+        {
+            var filterDefinition = FilterBuilder.In(f => f.BookId, ids);
+
+            return RemoveMany(filterDefinition);
         }
     }
 }

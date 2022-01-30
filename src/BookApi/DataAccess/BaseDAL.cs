@@ -49,7 +49,7 @@ namespace BookApi.DataAccess
 
         public virtual Task<bool> Remove(string id) => throw new NotImplementedException();
 
-        public virtual Task<bool> Remove(List<string> ids) => throw new NotImplementedException();
+        public virtual Task<bool> Remove(IEnumerable<string> ids) => throw new NotImplementedException();
 
         protected async Task<bool> RemoveMany(FilterDefinition<T> filterDefinition)
         {

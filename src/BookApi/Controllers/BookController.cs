@@ -25,9 +25,12 @@ namespace BookApi.Controllers
         private readonly string[] validExtensions = new string[] { "png", "jpg", "jpeg", "gif" };
         private readonly IBookService _bookService;
 
-        public BookController(ILogger<BookController> logger, IBookService bookService) : base(logger)
+        private readonly IMyListService _myListService;
+
+        public BookController(ILogger<BookController> logger, IBookService bookService, IMyListService myListService) : base(logger)
         {
             _bookService = bookService;
+            _myListService = myListService;
         }
 
         [HttpGet("list")]
@@ -86,6 +89,8 @@ namespace BookApi.Controllers
 
             var response = await _bookService.DeleteBooks(ids);
 
+            await _myListService.RemoveBookIdsFromMyList(ids);
+
             return ToSendResponse(response);
         }
 
@@ -97,7 +102,10 @@ namespace BookApi.Controllers
                 ModelState.AddModelError("Poster", errorMessage);
             }
 
-            book = JsonConvert.DeserializeObject<Book>(bookForm.BookString);
+            book = JsonConvert.DeserializeObject<Book>(bookForm.BookString, new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
 
             return TryValidateModel(book);
         }

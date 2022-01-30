@@ -23,12 +23,12 @@ namespace BookApi.DataAccess
             throw new SecurityException("Permission denied");
         }
 
-        public override Task<bool> Remove(List<string> ids)
+        public override Task<bool> Remove(IEnumerable<string> ids)
         {
             if (isAdmin)
             {
                 var filterDefinition = FilterBuilder.In(f => f.Id, ids);
-                return base.RemoveMany(filterDefinition);
+                return RemoveMany(filterDefinition);
             }
 
             throw new SecurityException("Permission denied");

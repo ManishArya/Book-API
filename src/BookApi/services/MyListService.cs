@@ -42,6 +42,21 @@ namespace BookApi.services
             return new BaseResponse("Book Added in my list");
         }
 
+        public async Task<ResponseApi<bool>> CheckItemInMyList(string itemId)
+        {
+            var result = await _myListDAL.CheckItemExistsInMyList(itemId);
+            return new ResponseApi<bool>(result);
+        }
+
+        public async Task<ResponseApi<long>> GetListCounts()
+        {
+            var result = await _myListDAL.GetListCounts();
+
+            return new ResponseApi<long>(result);
+        }
+
+        #region Delete
+
         public async Task<BaseResponse> RemoveItemFromMyList(string itemId)
         {
             var isExists = await _myListDAL.CheckItemExistsInMyList(itemId);
@@ -55,17 +70,19 @@ namespace BookApi.services
             return new BaseResponse("No Book found", HttpStatusCode.Gone);
         }
 
-        public async Task<ResponseApi<bool>> CheckItemInMyList(string itemId)
+        public async Task<BaseResponse> RemoveBookIdsFromMyList(IEnumerable<string> bookIds)
         {
-            var result = await _myListDAL.CheckItemExistsInMyList(itemId);
-            return new ResponseApi<bool>(result);
+
+            var result = await _myListDAL.Remove(bookIds);
+
+            return new BaseResponse("Book removed from my list successfully", HttpStatusCode.OK);
         }
 
-        public async Task<ResponseApi<long>> GetListCounts()
+        public Task<BaseResponse> RemoveItemFromMyList(IEnumerable<string> itemId)
         {
-            var result = await _myListDAL.GetListCounts();
-
-            return new ResponseApi<long>(result);
+            throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

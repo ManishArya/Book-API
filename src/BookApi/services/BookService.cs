@@ -9,6 +9,7 @@ namespace BookApi.services
     public class BookService : IBookService
     {
         private readonly IBaseDAL<Book> _bookDAL;
+
         public BookService(IBaseDAL<Book> bookDAL) => _bookDAL = bookDAL;
 
         public async Task<ResponseApi<IEnumerable<Book>>> GetBooks() => new ResponseApi<IEnumerable<Book>>(await _bookDAL.GetAll());
@@ -17,6 +18,10 @@ namespace BookApi.services
 
         public async Task<ResponseApi<Book>> GetBookById(string id) => new ResponseApi<Book>(await _bookDAL.GetById(id));
 
-        public async Task<BaseResponse> DeleteBooks(List<string> ids) { await _bookDAL.Remove(ids); return new BaseResponse("Books Delete Successfully", HttpStatusCode.OK); }
+        public async Task<BaseResponse> DeleteBooks(List<string> ids)
+        {
+            await _bookDAL.Remove(ids);
+            return new BaseResponse("Books Delete Successfully", HttpStatusCode.OK);
+        }
     }
 }
