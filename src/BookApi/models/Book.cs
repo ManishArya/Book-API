@@ -9,16 +9,16 @@ namespace BookApi.models
         [Required(ErrorMessage = "name is required.")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "release date is required.")]
+        [Required(ErrorMessage = "date is required.")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime ReleaseDate { get; set; }
 
         [Required(ErrorMessage = "description is required.")]
-        [MaxLength(200, ErrorMessage = "description is allowed upto 200 characters.")]
+        [MaxLength(1000, ErrorMessage = "description is allowed upto 1000 characters.")]
         public string Description { get; set; }
 
         [Required(ErrorMessage = "genre is required.")]
-        [MinLength(1)]
+        [MinLength(1, ErrorMessage = "at least one genre is required")]
         public string[] Genres { get; set; }
 
         public byte[] Poster { get; set; }

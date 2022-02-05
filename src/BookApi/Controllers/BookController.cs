@@ -57,7 +57,7 @@ namespace BookApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddBook([FromForm] BookForm bookForm)
         {
-            if (bookForm.BookString == null)
+            if (bookForm.Content == null)
             {
                 return BadRequest();
             }
@@ -102,10 +102,7 @@ namespace BookApi.Controllers
                 ModelState.AddModelError("Poster", errorMessage);
             }
 
-            book = JsonConvert.DeserializeObject<Book>(bookForm.BookString, new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore
-            });
+            book = JsonConvert.DeserializeObject<Book>(bookForm.Content);
 
             return TryValidateModel(book);
         }
@@ -128,7 +125,7 @@ namespace BookApi.Controllers
 
             if (!IsPosterValidImage(poster))
             {
-                errorMessage = "upload poster either jpg or png or gif.";
+                errorMessage = "uploaded poster can either jpg or png or gif.";
                 return false;
             }
 
@@ -136,7 +133,7 @@ namespace BookApi.Controllers
 
             if (poster.Length > allowedFileSize)
             {
-                errorMessage = "poster size cannot exceed more than 1 MB.";
+                errorMessage = "poster size cannot  more than 1 MB.";
                 return false;
             }
 
