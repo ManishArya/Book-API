@@ -13,6 +13,9 @@ using System.Linq;
 using BookApi.extensions;
 using System;
 using System.Collections.Generic;
+using FileSignatures;
+using FileSignatures.Formats;
+using Microsoft.Extensions.Localization;
 
 namespace BookApi.Controllers
 {
@@ -26,11 +29,13 @@ namespace BookApi.Controllers
         private readonly IBookService _bookService;
 
         private readonly IMyListService _myListService;
+        private readonly IStringLocalizer<localizations> _localizer;
 
-        public BookController(ILogger<BookController> logger, IBookService bookService, IMyListService myListService) : base(logger)
+        public BookController(ILogger<BookController> logger, IBookService bookService, IMyListService myListService, IStringLocalizer<localizations> localizer) : base(logger)
         {
             _bookService = bookService;
             _myListService = myListService;
+            this._localizer = localizer;
         }
 
         [HttpGet("list")]
@@ -113,19 +118,19 @@ namespace BookApi.Controllers
 
             if (poster == null)
             {
-                errorMessage = "poster is required.";
+                errorMessage = _localizer["posterRequired"].Value;
                 return false;
             }
 
             if (poster.Length == 0)
             {
-                errorMessage = "poster must have content.";
+                errorMessage = _localizer["posterContentvalidation"].Value;
                 return false;
             }
 
             if (!IsPosterValidImage(poster))
             {
-                errorMessage = "uploaded poster can either jpg or png or gif.";
+                errorMessage = _localizer["posterValidExtensions"].Value;
                 return false;
             }
 
@@ -133,7 +138,16 @@ namespace BookApi.Controllers
 
             if (poster.Length > allowedFileSize)
             {
-                errorMessage = "poster size cannot  more than 1 MB.";
+                errorMessage = _localizer["posterSizeValidation"].Value;
+                return false;
+            }
+
+            var inspector = new FileFormatInspector();
+            var format = inspector.DetermineFileFormat(poster.OpenReadStream());
+
+            if (!(format is Image))
+            {
+                errorMessage = _localizer["posterContentCheckValidation"].Value;
                 return false;
             }
 
@@ -151,7 +165,7 @@ namespace BookApi.Controllers
 
             var type = poster.ContentType;
 
-            if (!type.Contains("image/", StringComparison.OrdinalIgnoreCase))
+            if (!type.StartsWith("image", StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }

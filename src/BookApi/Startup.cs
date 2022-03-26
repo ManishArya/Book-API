@@ -56,7 +56,7 @@ namespace BookApi
                                SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["jwt:secret_key"]))
                         };
                     });
-
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddHttpContextAccessor()
             .AddSingleton<IDatabaseClient, DatabaseClient>()
             .AddScoped<IBookService, BookService>().
@@ -65,7 +65,12 @@ namespace BookApi
             .AddScoped(typeof(IBaseDAL<Genre>), typeof(GenreDAL))
             .AddScoped<IMyListService, MyListService>()
             .AddScoped<IMyListDAL, MyListDAL>()
-            .AddControllers();
+            .AddControllers()
+            .AddDataAnnotationsLocalization(options =>
+            {
+                options.DataAnnotationLocalizerProvider = (type, factory) =>
+                    factory.Create(typeof(localizations));
+            });
 
             services.AddSwaggerGen(c =>
             {
@@ -91,6 +96,13 @@ namespace BookApi
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var supportedCultures = new[] { "en-US", "hi" };
+            var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
+                .AddSupportedCultures(supportedCultures)
+                .AddSupportedUICultures(supportedCultures);
+
+            app.UseRequestLocalization(localizationOptions);
+
             if (env.IsDevelopment())
             {
                 app.UseSwagger();

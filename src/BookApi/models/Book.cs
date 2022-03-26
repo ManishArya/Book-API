@@ -6,19 +6,19 @@ namespace BookApi.models
 {
     public class Book : Base
     {
-        [Required(ErrorMessage = "name is required.")]
+        [Required(ErrorMessage = "nameRequired")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "date is required.")]
+        [Required(ErrorMessage = "dateRequired")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime ReleaseDate { get; set; }
 
-        [Required(ErrorMessage = "description is required.")]
-        [MaxLength(1000, ErrorMessage = "description is allowed upto 1000 characters.")]
+        [Required(ErrorMessage = "descriptionRequired")]
+        [MaxLength(1000, ErrorMessage = "descriptionMaxLength")]
         public string Description { get; set; }
 
-        [Required(ErrorMessage = "genre is required.")]
-        [MinLength(1, ErrorMessage = "at least one genre is required")]
+        [Required(ErrorMessage = "genreRequired")]
+        [MinLength(1, ErrorMessage = "genreMinLength")]
         public string[] Genres { get; set; }
 
         public byte[] Poster { get; set; }
