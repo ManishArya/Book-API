@@ -145,11 +145,11 @@
     <value>पोस्टर की आवश्यकता है।</value>
     <comment/>
   </data>
-  <data name="posterContentValidation" xml:space="preserve">
+  <data name="posterContentLengthvalidation" xml:space="preserve">
     <value> पोस्टर में कोई सामग्री नहीं है।</value>
     <comment/>
   </data>
-  <data name="posterValidExtensions" xml:space="preserve">
+  <data name="posterExtensionsValidation" xml:space="preserve">
     <value>अपलोड किया गया पोस्टर या तो jpg या png या gif हो सकता है।</value>
     <comment/>
   </data>
@@ -157,7 +157,7 @@
     <value>पोस्टर का आकार 1 एमबी से अधिक नहीं हो सकता।</value>
     <comment/>
   </data>
-  <data name="posterContentCheckValidation" xml:space="preserve">
+  <data name="posterContentValidation" xml:space="preserve">
     <value> पोस्टर सामग्री फ़ाइल एक्सटेंशन से मेल नहीं खाती।</value>
     <comment/>
   </data>

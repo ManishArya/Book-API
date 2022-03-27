@@ -26,9 +26,11 @@ namespace BookApi.Controllers
     public class BookController : BaseController
     {
         private readonly string[] validExtensions = new string[] { "png", "jpg", "jpeg", "gif" };
+
         private readonly IBookService _bookService;
 
         private readonly IMyListService _myListService;
+
         private readonly IStringLocalizer<localizations> _localizer;
 
         public BookController(ILogger<BookController> logger, IBookService bookService, IMyListService myListService, IStringLocalizer<localizations> localizer) : base(logger)
@@ -48,7 +50,6 @@ namespace BookApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBook(string id)
         {
-
             if (id == null)
             {
                 return BadRequest();
@@ -124,13 +125,7 @@ namespace BookApi.Controllers
 
             if (poster.Length == 0)
             {
-                errorMessage = _localizer["posterContentvalidation"].Value;
-                return false;
-            }
-
-            if (!IsPosterValidImage(poster))
-            {
-                errorMessage = _localizer["posterValidExtensions"].Value;
+                errorMessage = _localizer["posterContentLengthvalidation"].Value;
                 return false;
             }
 
@@ -142,31 +137,32 @@ namespace BookApi.Controllers
                 return false;
             }
 
+            if (!IsValidImage(poster, out errorMessage))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool IsValidImage(IFormFile poster, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
+            var extension = poster.FileName.ToGetExtension();
+            var type = poster.ContentType;
+
+            if (!validExtensions.Any(v => v == extension) || !type.StartsWith("image", StringComparison.OrdinalIgnoreCase))
+            {
+                errorMessage = _localizer["posterExtensionsValidation"].Value;
+                return false;
+            }
+
             var inspector = new FileFormatInspector();
             var format = inspector.DetermineFileFormat(poster.OpenReadStream());
 
             if (!(format is Image))
             {
-                errorMessage = _localizer["posterContentCheckValidation"].Value;
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool IsPosterValidImage(IFormFile poster)
-        {
-            var extension = poster.FileName.ToGetExtension();
-
-            if (!validExtensions.Any(v => v == extension))
-            {
-                return false;
-            }
-
-            var type = poster.ContentType;
-
-            if (!type.StartsWith("image", StringComparison.OrdinalIgnoreCase))
-            {
+                errorMessage = _localizer["posterContentValidation"].Value;
                 return false;
             }
 
