@@ -137,14 +137,14 @@ namespace BookApi.Controllers
                 return false;
             }
 
-            if (!IsValidImage(poster, out errorMessage))
+            if (!IsImageValid(poster, out errorMessage))
             {
                 return false;
             }
             return true;
         }
 
-        private bool IsValidImage(IFormFile poster, out string errorMessage)
+        private bool IsImageValid(IFormFile poster, out string errorMessage)
         {
             errorMessage = string.Empty;
 
