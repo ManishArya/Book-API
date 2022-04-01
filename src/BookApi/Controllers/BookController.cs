@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using FileSignatures;
 using FileSignatures.Formats;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Configuration;
 
 namespace BookApi.Controllers
 {
@@ -25,19 +26,20 @@ namespace BookApi.Controllers
     [LoggingFilter]
     public class BookController : BaseController
     {
-        private readonly string[] validExtensions = new string[] { "png", "jpg", "jpeg", "gif" };
-
         private readonly IBookService _bookService;
 
         private readonly IMyListService _myListService;
 
         private readonly IStringLocalizer<localizations> _localizer;
 
-        public BookController(ILogger<BookController> logger, IBookService bookService, IMyListService myListService, IStringLocalizer<localizations> localizer) : base(logger)
+        private readonly IConfiguration _configuration;
+
+        public BookController(ILogger<BookController> logger, IBookService bookService, IMyListService myListService, IStringLocalizer<localizations> localizer, IConfiguration configuration) : base(logger)
         {
             _bookService = bookService;
             _myListService = myListService;
-            this._localizer = localizer;
+            _localizer = localizer;
+            _configuration = configuration;
         }
 
         [HttpGet("list")]
@@ -88,7 +90,7 @@ namespace BookApi.Controllers
 
         public async Task<IActionResult> DeleteBooks(List<string> ids)
         {
-            if (ids == null)
+            if (ids == null || ids.Count == 0)
             {
                 return BadRequest();
             }
@@ -148,10 +150,11 @@ namespace BookApi.Controllers
         {
             errorMessage = string.Empty;
 
-            var extension = poster.FileName.ToGetExtension();
+            var validPosterExtensions = _configuration.GetSection("ValidPosterExtensions").Get<string[]>();
+            var extension = poster.FileName.GetFileExtension();
             var type = poster.ContentType;
 
-            if (!validExtensions.Any(v => v == extension) || !type.StartsWith("image", StringComparison.OrdinalIgnoreCase))
+            if (!validPosterExtensions.Any(v => v == extension) || !type.StartsWith("image", StringComparison.OrdinalIgnoreCase))
             {
                 errorMessage = _localizer["posterExtensionsValidation"].Value;
                 return false;

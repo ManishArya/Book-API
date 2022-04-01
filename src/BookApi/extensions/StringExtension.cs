@@ -4,14 +4,14 @@ namespace BookApi.extensions
 {
     public static class StringExtension
     {
-        public static string ToLowerFirstCharacter(this string input)
+        public static string GetFirstCharacterLowerCase(this string input)
         {
             if (string.IsNullOrEmpty(input))
             {
                 return string.Empty;
             }
 
-            else if (input.Length == 1)
+            if (input.Length == 1)
             {
                 return input.ToLower();
             }
@@ -19,7 +19,7 @@ namespace BookApi.extensions
             return char.ToLower(input[0]) + input.Substring(1);
         }
 
-        public static string ToGetExtension(this string input)
+        public static string GetFileExtension(this string input)
         {
             if (string.IsNullOrEmpty(input))
             {
@@ -28,8 +28,7 @@ namespace BookApi.extensions
 
             if (Path.HasExtension(input))
             {
-                var extension = Path.GetExtension(input);
-                return extension.Substring(1).ToLower();
+                return Path.GetExtension(input).ToLower();
             }
 
             return string.Empty;
