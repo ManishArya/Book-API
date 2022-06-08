@@ -13,14 +13,15 @@ namespace BookApi.DataAccess
     {
         protected readonly string _username;
 
-        protected readonly bool isAdmin;
+        protected readonly bool _isAdmin;
 
         protected readonly IMongoCollection<T> _collections;
 
         public BaseDAL(IHttpContextAccessor contextAccessor, IDatabaseClient client, string collectionName)
         {
-            _username = contextAccessor.HttpContext.User.Identity.Name;
-            isAdmin = bool.Parse(contextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "isAdmin")?.Value);
+            var user = contextAccessor.HttpContext.User;
+            _username = user.Identity.Name;
+            _isAdmin = bool.TryParse(user.Claims.FirstOrDefault(c => c.Type == "isAdmin")?.Value, out bool result);
             _collections = client.Database.GetCollection<T>(collectionName);
         }
 

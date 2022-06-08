@@ -15,7 +15,7 @@ namespace BookApi.DataAccess
 
         public override Task<bool> Save(Book book)
         {
-            if (isAdmin)
+            if (_isAdmin)
             {
                 return base.Save(book);
             }
@@ -25,7 +25,7 @@ namespace BookApi.DataAccess
 
         public override Task<bool> Remove(IEnumerable<string> ids)
         {
-            if (isAdmin)
+            if (_isAdmin)
             {
                 var filterDefinition = FilterBuilder.In(f => f.Id, ids);
                 return RemoveMany(filterDefinition);
