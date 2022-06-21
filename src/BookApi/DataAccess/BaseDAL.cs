@@ -6,6 +6,7 @@ using BookApi.models;
 using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using BookApi.enums;
 
 namespace BookApi.DataAccess
 {
@@ -17,11 +18,19 @@ namespace BookApi.DataAccess
 
         protected readonly IMongoCollection<T> _collections;
 
+        protected readonly RolePermission[] _permissions;
+
         public BaseDAL(IHttpContextAccessor contextAccessor, IDatabaseClient client, string collectionName)
         {
             var user = contextAccessor.HttpContext.User;
             _username = user.Identity.Name;
-            _isAdmin = bool.TryParse(user.Claims.FirstOrDefault(c => c.Type == "isAdmin")?.Value, out bool result);
+            bool.TryParse(user.FindFirst(c => c.Type == "isAdmin")?.Value, out bool result);
+            _isAdmin = result;
+            _permissions = user.FindAll(u => u.Type == "perms").
+                       Select(c => new { convert = Enum.TryParse<RolePermission>(c.Value, out var result), result }).
+                       Where(c => c.convert).Select(c => c.result)
+                       .ToArray();
+
             _collections = client.Database.GetCollection<T>(collectionName);
         }
 

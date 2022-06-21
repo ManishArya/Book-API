@@ -3,6 +3,8 @@ using System.Security;
 using System.Threading.Tasks;
 using BookApi.models;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
+using BookApi.enums;
 
 namespace BookApi.DataAccess
 {
@@ -15,7 +17,7 @@ namespace BookApi.DataAccess
 
         public override Task<bool> Save(Book book)
         {
-            if (_isAdmin)
+            if (_isAdmin || _permissions.Contains(RolePermission.AddBook))
             {
                 return base.Save(book);
             }
@@ -25,7 +27,7 @@ namespace BookApi.DataAccess
 
         public override Task<bool> Remove(IEnumerable<string> ids)
         {
-            if (_isAdmin)
+            if (_isAdmin || _permissions.Contains(RolePermission.DeleteBook))
             {
                 var filterDefinition = FilterBuilder.In(f => f.Id, ids);
                 return RemoveMany(filterDefinition);
