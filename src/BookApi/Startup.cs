@@ -69,7 +69,7 @@ namespace BookApi
             .AddDataAnnotationsLocalization(options =>
             {
                 options.DataAnnotationLocalizerProvider = (type, factory) =>
-                    factory.Create(typeof(localizations));
+                    factory.Create(typeof(Localizations));
             });
 
             services.AddSwaggerGen(c =>
@@ -96,12 +96,18 @@ namespace BookApi
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var supportedCultures = new[] { "en-US", "hi" };
-            var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
-                .AddSupportedCultures(supportedCultures)
-                .AddSupportedUICultures(supportedCultures);
+            var supportedCultures = new List<System.Globalization.CultureInfo> {
+                    new System.Globalization.CultureInfo("en-us"),
+                    new System.Globalization.CultureInfo("hi")
+                };
 
-            app.UseRequestLocalization(localizationOptions);
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-us"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures,
+
+            }.AddInitialRequestCultureProvider(new CustomHeaderRequestCultureProvider()));
 
             if (env.IsDevelopment())
             {

@@ -30,11 +30,11 @@ namespace BookApi.Controllers
 
         private readonly IMyListService _myListService;
 
-        private readonly IStringLocalizer<localizations> _localizer;
+        private readonly IStringLocalizer<Localizations> _localizer;
 
         private readonly IConfiguration _configuration;
 
-        public BookController(ILogger<BookController> logger, IBookService bookService, IMyListService myListService, IStringLocalizer<localizations> localizer, IConfiguration configuration) : base(logger)
+        public BookController(ILogger<BookController> logger, IBookService bookService, IMyListService myListService, IStringLocalizer<Localizations> localizer, IConfiguration configuration) : base(logger)
         {
             _bookService = bookService;
             _myListService = myListService;
