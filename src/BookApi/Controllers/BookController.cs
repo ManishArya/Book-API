@@ -42,6 +42,7 @@ namespace BookApi.Controllers
             _configuration = configuration;
         }
 
+        [AllowAnonymous]
         [HttpGet("list")]
         public async Task<IActionResult> GetBooks()
         {
@@ -49,6 +50,7 @@ namespace BookApi.Controllers
             return ToSendResponse(response);
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetBook(string id)
         {
@@ -87,7 +89,6 @@ namespace BookApi.Controllers
         }
 
         [HttpPost("delete")]
-
         public async Task<IActionResult> DeleteBooks(List<string> ids)
         {
             if (ids == null || ids.Count == 0)
@@ -139,14 +140,15 @@ namespace BookApi.Controllers
                 return false;
             }
 
-            if (!IsImageValid(poster, out errorMessage))
+            if (!CheckPosterExtensionAndFormat(poster, out errorMessage))
             {
                 return false;
             }
+
             return true;
         }
 
-        private bool IsImageValid(IFormFile poster, out string errorMessage)
+        private bool CheckPosterExtensionAndFormat(IFormFile poster, out string errorMessage)
         {
             errorMessage = string.Empty;
 
