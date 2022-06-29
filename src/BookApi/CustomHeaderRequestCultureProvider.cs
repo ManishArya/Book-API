@@ -10,7 +10,7 @@ namespace BookApi
         {
             var headerKeyValue = string.Empty;
 
-            if (httpContext.Request.Headers.TryGetValue("content-language", out var value))
+            if (httpContext.Request.Headers.TryGetValue("user-locale", out var value))
             {
                 headerKeyValue = value;
             }
