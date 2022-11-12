@@ -16,18 +16,15 @@ namespace BookApi.Controllers
     public class GenreController : BaseController
     {
         private readonly IGenreService _genreService;
-        public GenreController(IGenreService genreService, ILogger<GenreController> logger) : base(logger)
-        {
-            _genreService = genreService;
-        }
+        public GenreController(IGenreService genreService, ILogger<GenreController> logger) : base(logger) => _genreService = genreService;
 
         #region Genres
 
         [HttpGet]
         public async Task<IActionResult> GetGenres()
         {
-            var value = await _genreService.GetGenres();
-            return ToSendResponse(value);
+            var genres = await _genreService.GetGenres();
+            return ToSendResponse(genres);
         }
 
         #endregion Genres

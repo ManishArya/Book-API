@@ -42,7 +42,7 @@ namespace BookApi.services
             return new BaseResponse("Book Added in my list");
         }
 
-        public async Task<ResponseApi<bool>> CheckItemInMyList(string itemId)
+        public async Task<ResponseApi<bool>> CheckItem(string itemId)
         {
             var result = await _myListDAL.CheckItemExistsInMyList(itemId);
             return new ResponseApi<bool>(result);

@@ -17,16 +17,12 @@ namespace BookApi.Controllers
     {
         private readonly IMyListService _myListService;
 
-        public MyListController(IMyListService myListService, ILogger<MyListController> logger) : base(logger)
-        {
-            _myListService = myListService;
-        }
+        public MyListController(IMyListService myListService, ILogger<MyListController> logger) : base(logger) => _myListService = myListService;
 
         [HttpGet]
         public async Task<IActionResult> GetMyList()
         {
             var result = await _myListService.GetMyList();
-
             return ToSendResponse(result);
         }
 
@@ -51,25 +47,21 @@ namespace BookApi.Controllers
             }
 
             var result = await _myListService.RemoveItemFromMyList(itemId);
-
             return ToSendResponse(result);
         }
 
-        [HttpGet("checckiteminmylist")]
-        public async Task<IActionResult> CheckItemInMyList(string itemId)
+        [HttpGet("checkitem")]
+        public async Task<IActionResult> CheckItem(string itemId)
         {
             if (itemId == null)
             {
                 return BadRequest();
             }
 
-            return ToSendResponse(await _myListService.CheckItemInMyList(itemId));
+            return ToSendResponse(await _myListService.CheckItem(itemId));
         }
 
         [HttpGet("counts")]
-        public async Task<IActionResult> GetListCounts()
-        {
-            return ToSendResponse(await _myListService.GetListCounts());
-        }
+        public async Task<IActionResult> GetListCounts() => ToSendResponse(await _myListService.GetListCounts());
     }
 }

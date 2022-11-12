@@ -4,7 +4,7 @@ namespace BookApi.extensions
 {
     public static class StringExtension
     {
-        public static string GetFirstCharacterLowerCase(this string input)
+        public static string GetFirstCharacterInLowerCase(this string input)
         {
             if (string.IsNullOrEmpty(input))
             {

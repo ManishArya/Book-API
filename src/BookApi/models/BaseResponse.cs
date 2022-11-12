@@ -6,19 +6,11 @@ namespace BookApi.models
     public class BaseResponse
     {
         public BaseResponse(string description) : this(description, HttpStatusCode.OK)
-        {
+        { }
 
-        }
+        public BaseResponse(string description, HttpStatusCode statusCode = HttpStatusCode.InternalServerError) : this(statusCode) => ErrorDescription = description;
 
-        public BaseResponse(string description, HttpStatusCode statusCode = HttpStatusCode.InternalServerError) : this(statusCode)
-        {
-            ErrorDescription = description;
-        }
-
-        protected BaseResponse(HttpStatusCode statusCode)
-        {
-            StatusCode = (int)statusCode;
-        }
+        protected BaseResponse(HttpStatusCode statusCode) => StatusCode = (int)statusCode;
 
         public bool IsSuccess { get => StatusCode == (int)HttpStatusCode.OK; }
 

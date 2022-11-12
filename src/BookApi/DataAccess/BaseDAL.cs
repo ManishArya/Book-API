@@ -24,12 +24,15 @@ namespace BookApi.DataAccess
         {
             var user = contextAccessor.HttpContext.User;
             _username = user.Identity.Name;
-            bool.TryParse(user.FindFirst(c => c.Type == "isAdmin")?.Value, out bool result);
+            bool.TryParse(
+                user.FindFirst(c => c.Type == "isAdmin")?.Value,
+                out bool result);
             _isAdmin = result;
-            _permissions = user.FindAll(u => u.Type == "perms").
-                       Select(c => new { convert = Enum.TryParse<RolePermission>(c.Value, out var result), result }).
-                       Where(c => c.convert).Select(c => c.result)
-                       .ToArray();
+            _permissions = user.FindAll(u => u.Type == "perms")
+                               .Select(c => new { convert = Enum.TryParse<RolePermission>(c.Value, out var result), result })
+                               .Where(c => c.convert)
+                               .Select(c => c.result)
+                               .ToArray();
 
             _collections = client.Database.GetCollection<T>(collectionName);
         }
@@ -40,7 +43,6 @@ namespace BookApi.DataAccess
         {
             baseObject.CreatedAt = DateTime.Now;
             baseObject.CreatedBy = _username;
-
             await _collections.InsertOneAsync(baseObject);
             return true;
         }

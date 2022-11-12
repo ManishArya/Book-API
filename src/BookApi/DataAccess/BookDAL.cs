@@ -11,9 +11,7 @@ namespace BookApi.DataAccess
     public class BookDAL : BaseDAL<Book>
     {
         public BookDAL(IHttpContextAccessor contextAccessor, IDatabaseClient client) : base(contextAccessor, client, "books")
-        {
-
-        }
+        { }
 
         public override Task<bool> Save(Book book)
         {

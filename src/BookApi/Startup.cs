@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Context;
+using System.Linq;
 
 namespace BookApi
 {
@@ -23,7 +24,6 @@ namespace BookApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
             Log.Logger = new LoggerConfiguration().
                  ReadFrom.Configuration(configuration)
                  .CreateLogger();
@@ -34,17 +34,9 @@ namespace BookApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(o => o.AddPolicy("policy", builder =>
-            {
-                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-            }));
-
-            services.Configure<BookstoreDatabaseSettings>(
-              Configuration.GetSection(nameof(BookstoreDatabaseSettings)));
-
-            services.AddSingleton<IBookstoreDatabaseSettings>(sp =>
-                    sp.GetRequiredService<IOptions<BookstoreDatabaseSettings>>().Value);
-
+            services.AddCors(o => o.AddPolicy("policy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+            services.Configure<BookstoreDatabaseSettings>(Configuration.GetSection(nameof(BookstoreDatabaseSettings)));
+            services.AddSingleton<IBookstoreDatabaseSettings>(sp => sp.GetRequiredService<IOptions<BookstoreDatabaseSettings>>().Value);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
                     {
                         options.TokenValidationParameters = new TokenValidationParameters
@@ -52,25 +44,21 @@ namespace BookApi
                             ValidAudience = Configuration["jwt:audience"],
                             ValidIssuer = Configuration["jwt:issuer"],
                             NameClaimType = ClaimTypes.NameIdentifier,
-                            IssuerSigningKey = new
-                               SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["jwt:secret_key"]))
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["jwt:secret_key"]))
                         };
                     });
+
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddHttpContextAccessor()
-            .AddSingleton<IDatabaseClient, DatabaseClient>()
-            .AddScoped<IBookService, BookService>().
-            AddScoped(typeof(IBaseDAL<Book>), typeof(BookDAL))
-            .AddScoped<IGenreService, GenreService>()
-            .AddScoped(typeof(IBaseDAL<Genre>), typeof(GenreDAL))
-            .AddScoped<IMyListService, MyListService>()
-            .AddScoped<IMyListDAL, MyListDAL>()
-            .AddControllers()
-            .AddDataAnnotationsLocalization(options =>
-            {
-                options.DataAnnotationLocalizerProvider = (type, factory) =>
-                    factory.Create(typeof(Localizations));
-            });
+                .AddSingleton<IDatabaseClient, DatabaseClient>()
+                .AddScoped<IBookService, BookService>()
+                .AddScoped(typeof(IBaseDAL<Book>), typeof(BookDAL))
+                .AddScoped<IGenreService, GenreService>()
+                .AddScoped(typeof(IBaseDAL<Genre>), typeof(GenreDAL))
+                .AddScoped<IMyListService, MyListService>()
+                .AddScoped<IMyListDAL, MyListDAL>()
+                .AddControllers()
+                .AddDataAnnotationsLocalization(options => options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(Localizations)));
 
             services.AddSwaggerGen(c =>
             {
@@ -96,18 +84,17 @@ namespace BookApi
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var supportedCultures = new List<System.Globalization.CultureInfo> {
-                    new System.Globalization.CultureInfo("en-us"),
-                    new System.Globalization.CultureInfo("hi")
-                };
+            var cultures = Configuration.GetSection("SupportedCultures").Get<string[]>();
+            var supportedCultures = cultures.Select(c => new System.Globalization.CultureInfo(c)).ToList();
 
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
-                DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-us"),
+                DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(Configuration["DefaultCulture"]),
                 SupportedCultures = supportedCultures,
                 SupportedUICultures = supportedCultures,
 
-            }.AddInitialRequestCultureProvider(new CustomHeaderRequestCultureProvider()));
+            }
+            .AddInitialRequestCultureProvider(new CustomRequestCultureProvider()));
 
             if (env.IsDevelopment())
             {
@@ -116,25 +103,18 @@ namespace BookApi
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseCors("policy");
-
             app.UseAuthorization();
-
             app.Use(async (context, next) =>
-           {
-               var userId = context.User.Identity.IsAuthenticated ? context.User.Identity.Name : "";
-               LogContext.PushProperty("UserName", userId);
-               LogContext.PushProperty("IP", context.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4());
-               await next();
-           });
-
-            app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                var userId = context.User.Identity.IsAuthenticated ? context.User.Identity.Name : "";
+                LogContext.PushProperty("UserName", userId);
+                LogContext.PushProperty("IP", context.Request.HttpContext.Connection.RemoteIpAddress.MapToIPv4());
+                await next();
             });
+
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }

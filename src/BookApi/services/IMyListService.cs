@@ -12,7 +12,7 @@ namespace BookApi.services
 
         Task<ResponseApi<IEnumerable<MyList>>> GetMyList();
 
-        Task<ResponseApi<bool>> CheckItemInMyList(string id);
+        Task<ResponseApi<bool>> CheckItem(string id);
 
         Task<ResponseApi<long>> GetListCounts();
 

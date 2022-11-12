@@ -40,7 +40,7 @@ namespace BookApi.Controllers
         {
             var validationErrors = modelState.Where(ms => ms.Value.Errors.Count >= 1)
                                          .Select(ms => new { Key = ms.Key, Message = ms.Value.Errors[0].ErrorMessage }).
-                                         ToDictionary(ms => ms.Key.GetFirstCharacterLowerCase(), ms => ms.Message);
+                                         ToDictionary(ms => ms.Key.GetFirstCharacterInLowerCase(), ms => ms.Message);
 
             var responseApi = new ResponseApi<Dictionary<string, string>>(validationErrors, HttpStatusCode.BadRequest);
 

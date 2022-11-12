@@ -18,7 +18,7 @@ namespace BookApi.filters
                 if (context.Exception != null)
                 {
                     baseController.LogException(context.Exception.Message, context.Exception);
-                    string message = string.Empty;
+                    var message = string.Empty;
 
                     if (context.Exception is InvalidOperationException exception)
                     {
@@ -39,6 +39,7 @@ namespace BookApi.filters
                     context.Result = new JsonResult(new BaseResponse(message, (HttpStatusCode)context.HttpContext.Response.StatusCode));
                     context.ExceptionHandled = true;
                 }
+
                 baseController.LogInformation("returning");
             }
         }

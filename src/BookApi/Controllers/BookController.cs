@@ -60,7 +60,6 @@ namespace BookApi.Controllers
             }
 
             var result = await _bookService.GetBookById(id);
-
             return ToSendResponse(result);
         }
 
@@ -81,7 +80,6 @@ namespace BookApi.Controllers
                 }
 
                 var response = await _bookService.AddBook(book);
-
                 return ToSendResponse(response);
             }
 
@@ -97,9 +95,7 @@ namespace BookApi.Controllers
             }
 
             var response = await _bookService.DeleteBooks(ids);
-
             await _myListService.RemoveBookIdsFromMyList(ids);
-
             return ToSendResponse(response);
         }
 
@@ -107,12 +103,10 @@ namespace BookApi.Controllers
         {
             if (!TryValidatePoster(bookForm.Poster, out string errorMessage))
             {
-
                 ModelState.AddModelError("Poster", errorMessage);
             }
 
             book = JsonConvert.DeserializeObject<Book>(bookForm.Content);
-
             return TryValidateModel(book);
         }
 
@@ -151,7 +145,6 @@ namespace BookApi.Controllers
         private bool CheckPosterExtensionAndFormat(IFormFile poster, out string errorMessage)
         {
             errorMessage = string.Empty;
-
             var validPosterExtensions = _configuration.GetSection("ValidPosterExtensions").Get<string[]>();
             var extension = poster.FileName.GetFileExtension();
             var type = poster.ContentType;

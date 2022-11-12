@@ -1,7 +1,5 @@
 namespace BookApi
 {
-    public class Localizations
-    {
-
-    }
+    // Dumb class
+    public class Localizations { }
 }
