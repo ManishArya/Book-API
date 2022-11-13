@@ -93,8 +93,7 @@ namespace BookApi
                 SupportedCultures = supportedCultures,
                 SupportedUICultures = supportedCultures,
 
-            }
-            .AddInitialRequestCultureProvider(new CustomRequestCultureProvider()));
+            }.AddInitialRequestCultureProvider(new CustomRequestCultureProvider()));
 
             if (env.IsDevelopment())
             {

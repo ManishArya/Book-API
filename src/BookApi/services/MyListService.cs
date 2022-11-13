@@ -38,7 +38,6 @@ namespace BookApi.services
             }
 
             await _myListDAL.AddItemToMyList(book.Content.Id);
-
             return new BaseResponse("Book Added in my list");
         }
 
@@ -51,7 +50,6 @@ namespace BookApi.services
         public async Task<ResponseApi<long>> GetListCounts()
         {
             var result = await _myListDAL.GetListCounts();
-
             return new ResponseApi<long>(result);
         }
 
@@ -72,16 +70,11 @@ namespace BookApi.services
 
         public async Task<BaseResponse> RemoveBookIdsFromMyList(IEnumerable<string> bookIds)
         {
-
             var result = await _myListDAL.Remove(bookIds);
-
             return new BaseResponse("Book removed from my list successfully", HttpStatusCode.OK);
         }
 
-        public Task<BaseResponse> RemoveItemFromMyList(IEnumerable<string> itemId)
-        {
-            throw new NotImplementedException();
-        }
+        public Task<BaseResponse> RemoveItemFromMyList(IEnumerable<string> itemId) => throw new NotImplementedException();
 
         #endregion
     }

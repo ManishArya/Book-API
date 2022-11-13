@@ -122,15 +122,15 @@
     <comment/>
   </data>
   <data name="dateRequired" xml:space="preserve">
-    <value>तिथि की आवश्यकता है।</value>
+    <value>तिथि आवश्यक है।</value>
     <comment/>
   </data>
   <data name="descriptionRequired" xml:space="preserve">
-    <value> विवरण की आवश्यकता है।</value>
+    <value> विवरण आवश्यक है।</value>
     <comment/>
   </data>
   <data name="genreRequired" xml:space="preserve">
-    <value>शैली की आवश्यकता है।</value>
+    <value>शैली आवश्यक है।</value>
     <comment/>
   </data>
   <data name="descriptionMaxLength" xml:space="preserve">
@@ -138,11 +138,11 @@
     <comment/>
   </data>
   <data name="genreMinLength" xml:space="preserve">
-    <value>कम से कम एक शैली की आवश्यकता है।</value>
+    <value>कम से कम एक शैली आवश्यक है।</value>
     <comment/>
   </data>
   <data name="posterRequired" xml:space="preserve">
-    <value>पोस्टर की आवश्यकता है।</value>
+    <value>पोस्टर आवश्यक है।</value>
     <comment/>
   </data>
   <data name="posterContentLengthvalidation" xml:space="preserve">
@@ -159,6 +159,10 @@
   </data>
   <data name="posterContentValidation" xml:space="preserve">
     <value> पोस्टर सामग्री फ़ाइल एक्सटेंशन से मेल नहीं खाती।</value>
+    <comment/>
+  </data>
+  <data name="priceRequired" xml:space="preserve">
+    <value>priceRequired</value>
     <comment/>
   </data>
 </root>

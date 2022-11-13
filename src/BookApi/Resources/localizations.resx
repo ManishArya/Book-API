@@ -146,19 +146,23 @@
     <comment/>
   </data>
   <data name="posterContentLengthvalidation" xml:space="preserve">
-    <value>poster have no content</value>
+    <value>poster has no content</value>
     <comment/>
   </data>
   <data name="posterExtensionsValidation" xml:space="preserve">
-    <value>uploaded poster can either jpg or png or gif.</value>
+    <value>uploaded poster can be in jpg or png or gif format.</value>
     <comment/>
   </data>
   <data name="posterSizeValidation" xml:space="preserve">
-    <value>poster size cannot more than 1 MB.</value>
+    <value>poster size cannot exceed 1 MB.</value>
     <comment/>
   </data>
   <data name="posterContentValidation" xml:space="preserve">
-    <value>Poster contents don’t match the file extension.</value>
+    <value>poster contents don’t match the file extension.</value>
+    <comment/>
+  </data>
+  <data name="priceRequired" xml:space="preserve">
+    <value>price is required</value>
     <comment/>
   </data>
 </root>

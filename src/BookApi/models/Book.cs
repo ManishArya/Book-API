@@ -22,5 +22,10 @@ namespace BookApi.models
         public string[] Genres { get; set; }
 
         public byte[] Poster { get; set; }
+
+        [Required(ErrorMessage = "priceRequired")]
+        public decimal Price { get; set; }
+
+        public int Quantity { get; set; }
     }
 }

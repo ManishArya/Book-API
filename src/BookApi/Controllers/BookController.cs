@@ -126,6 +126,11 @@ namespace BookApi.Controllers
                 return false;
             }
 
+            if (!CheckPosterExtensionAndFormat(poster, out errorMessage))
+            {
+                return false;
+            }
+
             var allowedFileSize = 1 * 1024 * 1000;
 
             if (poster.Length > allowedFileSize)
@@ -133,12 +138,6 @@ namespace BookApi.Controllers
                 errorMessage = _localizer["posterSizeValidation"].Value;
                 return false;
             }
-
-            if (!CheckPosterExtensionAndFormat(poster, out errorMessage))
-            {
-                return false;
-            }
-
             return true;
         }
 
