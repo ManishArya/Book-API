@@ -24,6 +24,7 @@ namespace BookApi.models
         public byte[] Poster { get; set; }
 
         [Required(ErrorMessage = "priceRequired")]
+        [BsonRepresentation(MongoDB.Bson.BsonType.Decimal128)]
         public decimal Price { get; set; }
 
         public int Quantity { get; set; }

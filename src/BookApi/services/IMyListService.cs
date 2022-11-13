@@ -19,5 +19,7 @@ namespace BookApi.services
         Task<BaseResponse> RemoveItemFromMyList(IEnumerable<string> itemId);
 
         Task<BaseResponse> RemoveBookIdsFromMyList(IEnumerable<string> bookIds);
+
+        Task<BaseResponse> RemoveAllItems();
     }
 }

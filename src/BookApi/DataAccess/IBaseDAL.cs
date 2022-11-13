@@ -14,5 +14,7 @@ namespace BookApi.DataAccess
         Task<bool> Remove(IEnumerable<string> ids);
 
         Task<bool> Remove(string id);
+
+        Task<bool> RemoveAll();
     }
 }

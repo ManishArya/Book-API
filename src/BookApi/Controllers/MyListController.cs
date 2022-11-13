@@ -63,5 +63,8 @@ namespace BookApi.Controllers
 
         [HttpGet("counts")]
         public async Task<IActionResult> GetListCounts() => ToSendResponse(await _myListService.GetListCounts());
+
+        [HttpDelete("removeAll")]
+        public async Task<IActionResult> RemoveAllItems() => ToSendResponse(await _myListService.RemoveAllItems());
     }
 }

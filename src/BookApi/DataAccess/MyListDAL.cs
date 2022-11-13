@@ -17,7 +17,8 @@ namespace BookApi.DataAccess
             var filter = FilterBuilder.Eq(m => m.Username, _username);
             return (await _collections.Aggregate()
                                       .Match(filter)
-                                      .Lookup("books", "BookId", "_id", "Books")
+                                      .Lookup("books", "BookId", "_id", "Book")
+                                      .Unwind("Book")
                                       .As<MyList>()
                                       .ToListAsync());
         }

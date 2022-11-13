@@ -59,6 +59,12 @@ namespace BookApi.DataAccess
             return await (await _collections.FindAsync(c => c.Id == objectId.ToString()))?.FirstAsync<T>();
         }
 
+        public async Task<bool> RemoveAll()
+        {
+            await _collections.DeleteManyAsync(d => true);
+            return true;
+        }
+
         public virtual Task<bool> Remove(string id) => throw new NotImplementedException();
 
         public virtual Task<bool> Remove(IEnumerable<string> ids) => throw new NotImplementedException();

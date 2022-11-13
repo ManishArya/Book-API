@@ -74,6 +74,12 @@ namespace BookApi.services
             return new BaseResponse("Book removed from my list successfully", HttpStatusCode.OK);
         }
 
+        public async Task<BaseResponse> RemoveAllItems()
+        {
+            var result = await _myListDAL.RemoveAll();
+            return new BaseResponse("All items from myList removed successfully", HttpStatusCode.OK);
+        }
+
         public Task<BaseResponse> RemoveItemFromMyList(IEnumerable<string> itemId) => throw new NotImplementedException();
 
         #endregion
