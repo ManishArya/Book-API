@@ -12,6 +12,8 @@ namespace BookApi.models
 
         public string Username { get; set; }
 
+        public int Quantity {get; set;}
+
         [BsonIgnoreIfNull]
         public Book Book { get; set; }
     }

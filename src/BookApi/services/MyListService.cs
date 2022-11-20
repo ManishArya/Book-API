@@ -30,13 +30,6 @@ namespace BookApi.services
                 return new BaseResponse("No Book found", HttpStatusCode.NotFound);
             }
 
-            var isExists = await _myListDAL.CheckItemExistsInMyList(book.Content.Id);
-
-            if (isExists)
-            {
-                throw new InvalidOperationException("This book is already exists in MyList");
-            }
-
             await _myListDAL.AddItemToMyList(book.Content.Id);
             return new BaseResponse("Book Added in my list");
         }

@@ -39,11 +39,21 @@ namespace BookApi.DataAccess
 
         protected FilterDefinitionBuilder<T> FilterBuilder => Builders<T>.Filter;
 
+        protected UpdateDefinitionBuilder<T> UpdateBuilder => Builders<T>.Update;
+
         public virtual async Task<bool> Save(T baseObject)
         {
             baseObject.CreatedAt = DateTime.Now;
             baseObject.CreatedBy = _username;
             await _collections.InsertOneAsync(baseObject);
+            return true;
+        }
+
+        public virtual async Task<bool> Update(FilterDefinition<T> filterDefinition, UpdateDefinition<T> updateDefinition)
+        {
+            updateDefinition = updateDefinition.Set(u => u.LastModifiedAt, DateTime.Now)
+                .Set(u => u.UpdatedBy, _username);
+            await _collections.UpdateOneAsync(filterDefinition, updateDefinition);
             return true;
         }
 
@@ -56,7 +66,13 @@ namespace BookApi.DataAccess
         public async Task<T> GetById(string id)
         {
             var objectId = GetObjectId(id);
-            return await (await _collections.FindAsync(c => c.Id == objectId.ToString()))?.FirstAsync<T>();
+            var filterDefinition = FilterBuilder.Where(f => f.Id == objectId.ToString());
+            return await Get(filterDefinition);
+        }
+
+        public async Task<T> Get(FilterDefinition<T> filterDefinition)
+        {
+            return await (await _collections.FindAsync(filterDefinition))?.FirstOrDefaultAsync<T>();
         }
 
         public async Task<bool> RemoveAll()

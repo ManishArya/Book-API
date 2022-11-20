@@ -25,14 +25,28 @@ namespace BookApi.DataAccess
 
         public async Task<bool> AddItemToMyList(string itemId)
         {
-            var myList = new MyList
-            {
-                BookId = itemId,
-                Username = _username
-            };
+            var objectId = GetObjectId(itemId);
+            var filterDefinition = FilterBuilder.Where(f => f.BookId == objectId.ToString() && f.Username == _username);
+            var myList = await Get(filterDefinition);
 
-            await Save(myList);
-            return true;
+            if (myList != null)
+            {
+                var updateDefinition = UpdateBuilder.Set(u => u.Quantity, myList.Quantity + 1);
+                await Update(filterDefinition, updateDefinition);
+                return true;
+            }
+            else
+            {
+                myList = new MyList
+                {
+                    BookId = itemId,
+                    Username = _username,
+                    Quantity = 1
+                };
+                await Save(myList);
+                return true;
+
+            }
         }
 
         public async Task<bool> CheckItemExistsInMyList(string itemId)
