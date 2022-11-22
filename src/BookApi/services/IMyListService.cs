@@ -14,7 +14,7 @@ namespace BookApi.services
 
         Task<ResponseApi<bool>> CheckItem(string id);
 
-        Task<ResponseApi<long>> GetListCounts();
+        Task<ResponseApi<int>> GetListCounts();
 
         Task<BaseResponse> RemoveItemFromMyList(IEnumerable<string> itemId);
 

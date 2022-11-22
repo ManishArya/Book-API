@@ -40,10 +40,10 @@ namespace BookApi.services
             return new ResponseApi<bool>(result);
         }
 
-        public async Task<ResponseApi<long>> GetListCounts()
+        public async Task<ResponseApi<int>> GetListCounts()
         {
             var result = await _myListDAL.GetListCounts();
-            return new ResponseApi<long>(result);
+            return new ResponseApi<int>(result);
         }
 
         #region Delete

@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BookApi.models;
 using Microsoft.AspNetCore.Http;
-using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace BookApi.DataAccess
 {
@@ -45,7 +45,6 @@ namespace BookApi.DataAccess
                 };
                 await Save(myList);
                 return true;
-
             }
         }
 
@@ -64,11 +63,9 @@ namespace BookApi.DataAccess
             return true;
         }
 
-        public async Task<long> GetListCounts()
-        {
-            var filter = FilterBuilder.Eq(m => m.Username, _username);
-            return await base.CountDocumentsAsync(filter);
-        }
+        public async Task<int> GetListCounts() => await _collections.AsQueryable()
+                .Where(c => c.Username == _username).Select(x => x.Quantity)
+                .SumAsync(d => d);
 
         public override Task<bool> Remove(IEnumerable<string> ids)
         {

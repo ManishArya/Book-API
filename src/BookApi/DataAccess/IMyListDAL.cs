@@ -11,6 +11,6 @@ namespace BookApi.DataAccess
 
         Task<bool> DeleteItemFromMyList(string itemId);
 
-        Task<long> GetListCounts();
+        Task<int> GetListCounts();
     }
 }
