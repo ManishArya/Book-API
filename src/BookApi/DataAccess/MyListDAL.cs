@@ -23,27 +23,37 @@ namespace BookApi.DataAccess
                                       .ToListAsync());
         }
 
-        public async Task<bool> AddItemToMyList(string itemId)
+        public async Task<bool> AddItemToMyList(MyList myList)
         {
-            var objectId = GetObjectId(itemId);
-            var filterDefinition = FilterBuilder.Where(f => f.BookId == objectId.ToString() && f.Username == _username);
-            var myList = await Get(filterDefinition);
+            var bookId = GetObjectId(myList.BookId).ToString();
+            var filterDefinition = FilterBuilder.Where(f => f.BookId == bookId && f.Username == _username);
+            var existingMyList = await Get(filterDefinition);
 
-            if (myList != null)
+            if (existingMyList == null)
             {
-                var updateDefinition = UpdateBuilder.Set(u => u.Quantity, myList.Quantity + 1);
-                await Update(filterDefinition, updateDefinition);
+                myList = new MyList
+                {
+                    BookId = bookId,
+                    Username = _username,
+                    Quantity = 1
+                };
+
+                await Save(myList);
                 return true;
             }
             else
             {
-                myList = new MyList
+                var quantity = 0;
+                if (myList.Quantity == 0)
                 {
-                    BookId = itemId,
-                    Username = _username,
-                    Quantity = 1
-                };
-                await Save(myList);
+                    quantity = existingMyList.Quantity + 1;
+                }
+                else
+                {
+                    quantity = myList.Quantity;
+                }
+                var updateDefinition = UpdateBuilder.Set(u => u.Quantity, quantity);
+                await Update(filterDefinition, updateDefinition);
                 return true;
             }
         }

@@ -6,7 +6,7 @@ namespace BookApi.services
 {
     public interface IMyListService
     {
-        Task<BaseResponse> AddItemToMyList(string ItemId);
+        Task<BaseResponse> AddItemToMyList(MyList myList);
 
         Task<BaseResponse> RemoveItemFromMyList(string itemId);
 

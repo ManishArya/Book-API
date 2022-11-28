@@ -9,6 +9,9 @@ namespace BookApi.models
         [Required(ErrorMessage = "nameRequired")]
         public string Name { get; set; }
 
+        [Required]
+        public string Author { get; set; }
+
         [Required(ErrorMessage = "dateRequired")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime ReleaseDate { get; set; }
@@ -16,17 +19,10 @@ namespace BookApi.models
         [Required(ErrorMessage = "descriptionRequired")]
         [MaxLength(1000, ErrorMessage = "descriptionMaxLength")]
         public string Description { get; set; }
-
-        [Required(ErrorMessage = "genreRequired")]
-        [MinLength(1, ErrorMessage = "genreMinLength")]
-        public string[] Genres { get; set; }
-
         public byte[] Poster { get; set; }
 
         [Required(ErrorMessage = "priceRequired")]
         [BsonRepresentation(MongoDB.Bson.BsonType.Decimal128)]
         public decimal Price { get; set; }
-
-        public int Quantity { get; set; }
     }
 }

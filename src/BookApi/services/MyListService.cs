@@ -11,26 +11,16 @@ namespace BookApi.services
     {
         private readonly IMyListDAL _myListDAL;
 
-        private readonly IBookService _bookService;
-
-        public MyListService(IMyListDAL myListDAL, IBookService bookService)
+        public MyListService(IMyListDAL myListDAL)
         {
             _myListDAL = myListDAL;
-            _bookService = bookService;
         }
 
         public async Task<ResponseApi<IEnumerable<MyList>>> GetMyList() => new ResponseApi<IEnumerable<MyList>>(await _myListDAL.GetAll());
 
-        public async Task<BaseResponse> AddItemToMyList(string bookId)
+        public async Task<BaseResponse> AddItemToMyList(MyList myList)
         {
-            var book = await _bookService.GetBookById(bookId);
-
-            if (book.Content == null)
-            {
-                return new BaseResponse("No Book found", HttpStatusCode.NotFound);
-            }
-
-            await _myListDAL.AddItemToMyList(book.Content.Id);
+            await _myListDAL.AddItemToMyList(myList);
             return new BaseResponse("Book Added in my list");
         }
 

@@ -53,8 +53,6 @@ namespace BookApi
                 .AddSingleton<IDatabaseClient, DatabaseClient>()
                 .AddScoped<IBookService, BookService>()
                 .AddScoped(typeof(IBaseDAL<Book>), typeof(BookDAL))
-                .AddScoped<IGenreService, GenreService>()
-                .AddScoped(typeof(IBaseDAL<Genre>), typeof(GenreDAL))
                 .AddScoped<IMyListService, MyListService>()
                 .AddScoped<IMyListDAL, MyListDAL>()
                 .AddControllers()

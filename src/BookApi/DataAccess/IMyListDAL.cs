@@ -5,7 +5,7 @@ namespace BookApi.DataAccess
 {
     public interface IMyListDAL : IBaseDAL<MyList>
     {
-        Task<bool> AddItemToMyList(string itemId);
+        Task<bool> AddItemToMyList(MyList myList);
 
         Task<bool> CheckItemExistsInMyList(string itemId);
 

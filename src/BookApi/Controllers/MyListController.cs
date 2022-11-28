@@ -1,4 +1,4 @@
-using System.Net;
+using System;
 using System.Threading.Tasks;
 using BookApi.filters;
 using BookApi.services;
@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using BookApi.models;
 
 namespace BookApi.Controllers
 {
@@ -27,14 +28,14 @@ namespace BookApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddItemToMyList([FromQuery(Name = "itemId")] string itemId)
+        public async Task<IActionResult> AddItemToMyList(MyList myList)
         {
-            if (itemId == null)
+            if (myList == null)
             {
                 return BadRequest();
             }
 
-            var result = await _myListService.AddItemToMyList(itemId);
+            var result = await _myListService.AddItemToMyList(myList);
             return ToSendResponse(result);
         }
 
@@ -51,6 +52,7 @@ namespace BookApi.Controllers
         }
 
         [HttpGet("checkitem")]
+        [Obsolete]
         public async Task<IActionResult> CheckItem(string itemId)
         {
             if (itemId == null)
