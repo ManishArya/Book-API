@@ -53,8 +53,6 @@ namespace BookApi
                 .AddSingleton<IDatabaseClient, DatabaseClient>()
                 .AddScoped<IBookService, BookService>()
                 .AddScoped(typeof(IBaseDAL<Book>), typeof(BookDAL))
-                .AddScoped<IMyListService, MyListService>()
-                .AddScoped<IMyListDAL, MyListDAL>()
                 .AddControllers()
                 .AddDataAnnotationsLocalization(options => options.DataAnnotationLocalizerProvider = (type, factory) => factory.Create(typeof(Localizations)));
 
