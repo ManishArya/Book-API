@@ -19,6 +19,7 @@ namespace BookApi.models
         [Required(ErrorMessage = "descriptionRequired")]
         [MaxLength(1000, ErrorMessage = "descriptionMaxLength")]
         public string Description { get; set; }
+
         public byte[] Poster { get; set; }
 
         [Required(ErrorMessage = "priceRequired")]

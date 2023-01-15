@@ -20,7 +20,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BookApi.Controllers
 {
-    [Route("api/Book")]
+    [Route("api/v1/Book")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [LoggingFilter]
@@ -43,7 +43,7 @@ namespace BookApi.Controllers
         [HttpGet("list")]
         public async Task<IActionResult> GetBooks()
         {
-            var response = await _bookService.GetBooks();
+            var response = await _bookService.GetBooksAsync();
             return ToSendResponse(response);
         }
 
@@ -56,7 +56,7 @@ namespace BookApi.Controllers
                 return BadRequest();
             }
 
-            var result = await _bookService.GetBookById(id);
+            var result = await _bookService.GetBookByIdAsync(id);
             return ToSendResponse(result);
         }
 
@@ -76,22 +76,22 @@ namespace BookApi.Controllers
                     book.Poster = memoryStream.ToArray();
                 }
 
-                var response = await _bookService.AddBook(book);
-                return ToSendResponse(response);
+                await _bookService.AddBookAsync(book);
+                return ToSendResponse();
             }
 
             return ToSendResponse(ModelState);
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> DeleteBooks(List<string> ids)
+        public async Task<IActionResult> DeleteBooks(ICollection<string> ids)
         {
             if (ids == null || ids.Count == 0)
             {
                 return BadRequest();
             }
 
-            var response = await _bookService.DeleteBooks(ids);
+            var response = await _bookService.DeleteBooksAsync(ids);
             return ToSendResponse(response);
         }
 

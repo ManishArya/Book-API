@@ -10,7 +10,7 @@ namespace BookApi.models
 
         public BaseResponse(string description, HttpStatusCode statusCode = HttpStatusCode.InternalServerError) : this(statusCode) => ErrorDescription = description;
 
-        protected BaseResponse(HttpStatusCode statusCode) => StatusCode = (int)statusCode;
+        public BaseResponse(HttpStatusCode statusCode) => StatusCode = (int)statusCode;
 
         public bool IsSuccess { get => StatusCode == (int)HttpStatusCode.OK; }
 

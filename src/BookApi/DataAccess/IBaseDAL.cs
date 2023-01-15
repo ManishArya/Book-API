@@ -5,16 +5,12 @@ namespace BookApi.DataAccess
 {
     public interface IBaseDAL<T>
     {
-        Task<IEnumerable<T>> GetAll();
+        Task<IEnumerable<T>> GetAsync();
 
-        Task<bool> Save(T baseObject);
+        Task SaveAsync(T baseObject);
 
-        Task<T> GetById(string id);
+        Task<T> GetByIdAsync(string id);
 
-        Task<bool> Remove(IEnumerable<string> ids);
-
-        Task<bool> Remove(string id);
-
-        Task<bool> RemoveAll();
+        Task<bool> RemoveAllAsync();
     }
 }

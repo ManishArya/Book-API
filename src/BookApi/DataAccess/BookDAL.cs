@@ -8,30 +8,32 @@ using BookApi.enums;
 
 namespace BookApi.DataAccess
 {
-    public class BookDAL : BaseDAL<Book>
+    public class BookDAL : BaseDAL<Book>, IBookDAL
     {
-        public BookDAL(IHttpContextAccessor contextAccessor, IDatabaseClient client) : base(contextAccessor, client, "books")
-        { }
+        public BookDAL(IHttpContextAccessor contextAccessor, IBookDBContext context) : base(contextAccessor, context) { }
 
-        public override Task<bool> Save(Book book)
+        public override async Task SaveAsync(Book book)
         {
-            if (_isAdmin || _permissions.Contains(RolePermission.AddBook))
+            if (!HasPermission(RolePermission.AddBook))
             {
-                return base.Save(book);
+                throw new SecurityException("Permission denied");
             }
 
-            throw new SecurityException("Permission denied");
+            await base.SaveAsync(book);
         }
 
-        public override Task<bool> Remove(IEnumerable<string> ids)
+        public async Task<bool> RemoveAsync(IEnumerable<string> ids)
         {
-            if (_isAdmin || _permissions.Contains(RolePermission.DeleteBook))
+            if (!HasPermission(RolePermission.DeleteBook))
             {
-                var filterDefinition = FilterBuilder.In(f => f.Id, ids);
-                return RemoveMany(filterDefinition);
+                throw new SecurityException("Permission denied");
             }
 
-            throw new SecurityException("Permission denied");
+            var filterDefinition = FilterBuilder.In(f => f.Id, ids);
+            return await RemoveMany(filterDefinition);
+
         }
+
+        private bool HasPermission(RolePermission permission) => _isAdmin || _permissions.Contains(permission);
     }
 }

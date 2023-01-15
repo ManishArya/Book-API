@@ -26,6 +26,8 @@ namespace BookApi.Controllers
             return StatusCode(statusCode, baseResponse);
         }
 
+        protected IActionResult ToSendResponse(HttpStatusCode statusCode = HttpStatusCode.OK) => ToSendResponse(new BaseResponse(statusCode));
+
         protected IActionResult ToSendResponse(ModelStateDictionary modelState)
         {
             var validationErrors = modelState.Where(ms => ms.Value.Errors.Count >= 1)
