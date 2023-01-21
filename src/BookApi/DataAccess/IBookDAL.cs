@@ -6,6 +6,8 @@ namespace BookApi.DataAccess
 {
     public interface IBookDAL : IBaseDAL<Book>
     {
-        Task<bool> RemoveAsync(IEnumerable<string> ids);
+        Task<bool> DeleteBookAsync(IEnumerable<string> ids);
+
+        Task<(IEnumerable<Book>, long)> GetBooksAsync(BookCriteria criteria);
     }
 }

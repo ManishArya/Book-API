@@ -40,10 +40,16 @@ namespace BookApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("list")]
-        public async Task<IActionResult> GetBooks()
+        [HttpPost("list")]
+        public async Task<IActionResult> GetBooks(BookCriteria criteria)
         {
-            var response = await _bookService.GetBooksAsync();
+            if (criteria == null)
+            {
+                return BadRequest();
+
+            }
+
+            var response = await _bookService.GetBooksAsync(criteria);
             return ToSendResponse(response);
         }
 

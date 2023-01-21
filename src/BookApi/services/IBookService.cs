@@ -6,7 +6,7 @@ namespace BookApi.services
 {
     public interface IBookService
     {
-        Task<ResponseApi<IEnumerable<Book>>> GetBooksAsync();
+        Task<PageResponseApi<IEnumerable<Book>>> GetBooksAsync(BookCriteria criteria);
 
         Task<ResponseApi<Book>> GetBookByIdAsync(string id);
 

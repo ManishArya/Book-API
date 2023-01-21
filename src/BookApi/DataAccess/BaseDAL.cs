@@ -24,6 +24,7 @@ namespace BookApi.DataAccess
 
         protected UpdateDefinitionBuilder<TDocument> UpdateBuilder => Builders<TDocument>.Update;
 
+        protected SortDefinitionBuilder<TDocument> SortDefinitionBuilder => Builders<TDocument>.Sort;
 
         public BaseDAL(IHttpContextAccessor contextAccessor, IBookDBContext context)
         {
@@ -39,14 +40,14 @@ namespace BookApi.DataAccess
             _collections = context.Get<TDocument>("books");
         }
 
-        public virtual async Task SaveAsync(TDocument baseDocument)
+        public virtual async Task SaveDocumentAsync(TDocument baseDocument)
         {
             baseDocument.CreatedAt = DateTime.Now;
             baseDocument.CreatedBy = _userId;
             await _collections.InsertOneAsync(baseDocument);
         }
 
-        public virtual async Task<bool> UpdateOne(FilterDefinition<TDocument> filterDefinition, UpdateDefinition<TDocument> updateDefinition)
+        public virtual async Task<bool> UpdateOneDocumentAsync(FilterDefinition<TDocument> filterDefinition, UpdateDefinition<TDocument> updateDefinition)
         {
             updateDefinition = updateDefinition.Set(u => u.LastModifiedAt, DateTime.Now)
                                                .Set(u => u.UpdatedBy, _userId);
@@ -54,34 +55,40 @@ namespace BookApi.DataAccess
             return result.IsAcknowledged && result.ModifiedCount > 0;
         }
 
-        public virtual async Task<IEnumerable<TDocument>> GetAsync()
+        public virtual async Task<IEnumerable<TDocument>> GetDocumentsAsync()
         {
             var result = await _collections.FindAsync(c => true);
             return await result.ToListAsync();
         }
 
-        public virtual async Task<TDocument> Get(FilterDefinition<TDocument> filterDefinition) => await (await _collections.FindAsync(filterDefinition))?.FirstOrDefaultAsync<TDocument>();
+        public virtual async Task<TDocument> GetDocumentOneAsync(FilterDefinition<TDocument> filterDefinition) => await (await _collections.FindAsync(filterDefinition))?.FirstOrDefaultAsync<TDocument>();
 
-        public virtual async Task<TDocument> GetByIdAsync(string id)
+        public virtual async Task<TDocument> GetDocumentByIdAsync(string id)
         {
             var objectId = GetObjectId(id);
             var filterDefinition = FilterBuilder.Where(f => f.Id == objectId.ToString());
-            return await Get(filterDefinition);
+            return await GetDocumentOneAsync(filterDefinition);
         }
 
-        public virtual async Task<bool> RemoveAllAsync()
+        public virtual async Task<bool> DeleteDocumentsAsync()
         {
             var filterDefinition = FilterBuilder.Where(f => true);
-            return await RemoveMany(filterDefinition);
+            return await DeleteManyDocumentsAsync(filterDefinition);
         }
 
-        protected virtual async Task<bool> RemoveMany(FilterDefinition<TDocument> filterDefinition)
+        protected virtual async Task<IEnumerable<TDocument>> GetDocumentsAsync(FilterDefinition<TDocument> filters, FindOptions<TDocument> options)
+        {
+            var result = await _collections.FindAsync(filters, options);
+            return await result.ToListAsync();
+        }
+
+        protected virtual async Task<bool> DeleteManyDocumentsAsync(FilterDefinition<TDocument> filterDefinition)
         {
             var result = await _collections.DeleteManyAsync(filterDefinition);
             return result.IsAcknowledged && result.DeletedCount > 0;
         }
 
-        protected virtual async Task<bool> RemoveOne(FilterDefinition<TDocument> filterDefinition)
+        protected virtual async Task<bool> DeleteOneDocumentAsync(FilterDefinition<TDocument> filterDefinition)
         {
             var result = await _collections.DeleteOneAsync(filterDefinition);
             return result.IsAcknowledged && result.DeletedCount > 0;

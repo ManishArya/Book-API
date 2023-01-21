@@ -12,15 +12,19 @@ namespace BookApi.services
 
         public BookService(IBookDAL bookDAL) => _bookDAL = bookDAL;
 
-        public async Task<ResponseApi<IEnumerable<Book>>> GetBooksAsync() => new ResponseApi<IEnumerable<Book>>(await _bookDAL.GetAsync());
+        public async Task<PageResponseApi<IEnumerable<Book>>> GetBooksAsync(BookCriteria criteria)
+        {
+            var (books, count) = await _bookDAL.GetBooksAsync(criteria);
+            return new PageResponseApi<IEnumerable<Book>>(books, count);
+        }
 
-        public async Task AddBookAsync(Book book) => await _bookDAL.SaveAsync(book);
+        public async Task AddBookAsync(Book book) => await _bookDAL.SaveDocumentAsync(book);
 
-        public async Task<ResponseApi<Book>> GetBookByIdAsync(string id) => new ResponseApi<Book>(await _bookDAL.GetByIdAsync(id));
+        public async Task<ResponseApi<Book>> GetBookByIdAsync(string id) => new ResponseApi<Book>(await _bookDAL.GetDocumentByIdAsync(id));
 
         public async Task<BaseResponse> DeleteBooksAsync(ICollection<string> ids)
         {
-            await _bookDAL.RemoveAsync(ids);
+            await _bookDAL.DeleteBookAsync(ids);
             return new BaseResponse("Books Delete Successfully", HttpStatusCode.OK);
         }
     }
