@@ -3,7 +3,6 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using BookApi.models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
@@ -25,15 +24,15 @@ builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(configuration));
 var serviceCollections = builder.Services;
 serviceCollections.AddCors(c => c.AddPolicy("policy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 serviceCollections.Configure<BookstoreDatabaseSettings>(configuration.GetSection(nameof(BookstoreDatabaseSettings)));
-serviceCollections.AddSingleton<IBookstoreDatabaseSettings>(sp => sp.GetRequiredService<IOptions<BookstoreDatabaseSettings>>().Value);
 serviceCollections.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
                     {
+                        var jwtOptions = configuration.GetSection("JWT").Get<JwtOption>();
                         options.TokenValidationParameters = new TokenValidationParameters
                         {
-                            ValidAudience = configuration["jwt:audience"],
-                            ValidIssuer = configuration["jwt:issuer"],
+                            ValidAudience = jwtOptions.Audience,
+                            ValidIssuer = jwtOptions.Issuer,
                             NameClaimType = ClaimTypes.NameIdentifier,
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwt:secret_key"]))
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.secret_key))
                         };
                     });
 
