@@ -1,6 +1,6 @@
 namespace BookApi.models
 {
-    public class BookstoreDatabaseSettings : IBookstoreDatabaseSettings
+    public class BookstoreDatabaseSettings
     {
         public string ConnectionString { get; set; }
 
