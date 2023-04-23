@@ -16,10 +16,11 @@ using Serilog.Context;
 using System.Linq;
 using BookApi;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
 var builder = WebApplication.CreateBuilder(args);
-var configuration = builder.Configuration;
-builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(configuration));
+builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(builder.Configuration));
+var configuration = builder.Configuration.AddEnvironmentVariables().Build();
 
 var serviceCollections = builder.Services;
 serviceCollections.AddCors(c => c.AddPolicy("policy", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
@@ -69,6 +70,7 @@ var cultures = configuration.GetSection("SupportedCultures").Get<string[]>();
 var supportedCultures = cultures.Select(c => new System.Globalization.CultureInfo(c)).ToList();
 
 var app = builder.Build();
+
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
     DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(configuration["DefaultCulture"]),
