@@ -85,7 +85,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookApi v1"));
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment()) {
+   app.UseHttpsRedirection();
+}
+
 app.UseRouting();
 app.UseCors("policy");
 app.UseAuthorization();
