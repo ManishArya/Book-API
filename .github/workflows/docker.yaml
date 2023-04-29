@@ -25,6 +25,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+          dockerfile: ./src/BookApi/Dockerfile
           context: .
           push: true
           tags: ${{secrets.DOCKERHUB_USERNAME}}/my-repo:book-server-v${{ github.run_attempt }}
